@@ -1,0 +1,14 @@
+useDynLib(VarSelLCM)
+export(VarSelCluster)
+exportClasses(
+     "VSLCMcriteria",
+     "VSLCMpartitions",
+     "VSLCMmodel",
+     "VSLCMparameters")
+exportClasses("VSLCMresults")
+exportMethods(summary)
+exportMethods(print)
+import(methods)
+importFrom("Rcpp", evalCpp)
+importFrom("mclust", Mclust)
+importFrom("parallel", mclapply, detectCores, makeCluster, clusterExport, parLapply, clusterEvalQ, stopCluster)

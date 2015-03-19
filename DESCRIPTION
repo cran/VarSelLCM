@@ -1,0 +1,23 @@
+Package: VarSelLCM
+Type: Package
+Version: 1.0
+Date: 2015-03-19
+Author: Matthieu Marbac and Mohammed Sedki
+Title: Variable Selection for Model-Based Clustering using the
+        Integrated Complete-Data Likelihood of a Latent Class Model
+Description: Variable Selection for model-based clustering by using a mixture model of Gaussian distributions 
+             assuming conditional independence between variables. The algorithm carries out the model 
+             selection by optimizing the MICL criterion which has a closed form for such a distribution.
+Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
+Imports: methods, Rcpp (>= 0.11.1), parallel, mclust
+LinkingTo: Rcpp, RcppArmadillo
+License: GPL (>= 2)
+ByteCompile: true
+LazyLoad: yes
+Collate: 'ICLexact.R' 'RcppExports.R' 'VSLCM_Classes.R'
+        'VSLCM_initialization.R' 'VarSelLCM.R' 'Print.R' 'Summary.R'
+        'onAttach.R'
+Packaged: 2015-03-19 13:58:52 UTC; sedki
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2015-03-19 23:47:39
