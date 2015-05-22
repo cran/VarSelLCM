@@ -1,7 +1,7 @@
 Package: VarSelLCM
 Type: Package
-Version: 1.0
-Date: 2015-03-19
+Version: 1.1
+Date: 2015-05-22
 Author: Matthieu Marbac and Mohammed Sedki
 Title: Variable Selection for Model-Based Clustering using the
         Integrated Complete-Data Likelihood of a Latent Class Model
@@ -17,7 +17,7 @@ LazyLoad: yes
 Collate: 'ICLexact.R' 'RcppExports.R' 'VSLCM_Classes.R'
         'VSLCM_initialization.R' 'VarSelLCM.R' 'Print.R' 'Summary.R'
         'onAttach.R'
-Packaged: 2015-03-19 13:58:52 UTC; sedki
+Packaged: 2015-05-22 10:47:40 UTC; biostat
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-03-19 23:47:39
+Date/Publication: 2015-05-22 18:55:26

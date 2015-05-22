@@ -11,10 +11,10 @@ VSLCM_initialization_priors <- function(x){
   priors <- matrix(1, ncol(x), 4)
   colnames(priors) <- c("alpha", "beta", "lambda", "delta")
   for (j in 1:ncol(x)){
-    priors[j,1] <- 1.28*2
-    priors[j,2] <- sqrt(0.72 * var(x[,j]))
+    #priors[j,1] <- 1.28*2
+    #priors[j,2] <- sqrt(0.72 * var(x[,j]))
     priors[j,3] <- mean(x[,j])
-    priors[j,4] <- 2.6 /(max(x[,j]) - min(x[,j]))
+    priors[j,4] <- 1/100 #2.6 /(max(x[,j]) - min(x[,j]))
   }
   #priors <- matrix(1, ncol(x), 4)
   return(priors)
