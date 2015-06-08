@@ -12,7 +12,7 @@ This class contains the model information
 \section{Slots}{
   \describe{
     \item{\code{g}:}{Number of components}
-    \item{\code{omega}:}{Boolean vector indicating if each variable is irrelevant (1) or not (0) to the clustering}
+    \item{\code{omega}:}{Boolean vector indicating if each variable is relevant (1) or not (0) to the clustering}
   }
 }
 

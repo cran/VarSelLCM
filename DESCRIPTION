@@ -1,23 +1,21 @@
 Package: VarSelLCM
 Type: Package
-Version: 1.1
-Date: 2015-05-22
+Version: 1.2
+Date: 2015-06-08
 Author: Matthieu Marbac and Mohammed Sedki
 Title: Variable Selection for Model-Based Clustering using the
         Integrated Complete-Data Likelihood of a Latent Class Model
-Description: Variable Selection for model-based clustering by using a mixture model of Gaussian distributions 
-             assuming conditional independence between variables. The algorithm carries out the model 
-             selection by optimizing the MICL criterion which has a closed form for such a distribution.
+Description: Uses a finite mixture model for performing the cluster analysis with variable selection of continuous data by assuming independence between classes. The package deals dataset with missing values by assuming that values are missing at random. The one-dimensional marginals of the components follow Gaussian distributions for facilitating both model interpretation and model selection. The variable selection is led by the Maximum Integrated Complete-Data Likelihood criterion. The maximum likelihood inference is done by an EM algorithm for the selected model. This package also performs the imputation of  missing values.
 Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
-Imports: methods, Rcpp (>= 0.11.1), parallel, mclust
-LinkingTo: Rcpp, RcppArmadillo
 License: GPL (>= 2)
+Imports: methods, Rcpp (>= 0.11.1), parallel
+LinkingTo: Rcpp, RcppArmadillo
 ByteCompile: true
 LazyLoad: yes
-Collate: 'ICLexact.R' 'RcppExports.R' 'VSLCM_Classes.R'
-        'VSLCM_initialization.R' 'VarSelLCM.R' 'Print.R' 'Summary.R'
-        'onAttach.R'
-Packaged: 2015-05-22 10:47:40 UTC; biostat
+Collate: 'CheckInputs.R' 'DataCstr.R' 'VSLCMGrlClasses.R' 'ICLexact.R'
+        'DesignOutput.R' 'Summary.R' 'Print.R' 'VarSelLCM.R'
+        'RcppExports.R' 'Imputation.R' 'withoutmixture.R'
+Packaged: 2015-06-10 13:11:39 UTC; sedki
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-05-22 18:55:26
+Date/Publication: 2015-06-10 19:00:07

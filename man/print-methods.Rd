@@ -1,23 +1,24 @@
 \docType{methods}
 \name{print}
 \alias{print}
-\alias{print,VSLCMresults-method}
+\alias{print,VSLCMresultsContinuous-method}
 \title{Print an object of class VSLCMresults}
 \arguments{
-  \item{x}{An object of class \code{\linkS4class{VSLCMresults}}}
+  \item{x}{An object of class \code{\linkS4class{VSLCMresultsContinuous}}}
 }
 \value{
   NULL. 
 }
 \description{
- Print an object of class VSLCMresults
+ Print an object of class VSLCMresultsContinuous
 }
 \examples{
-require(mclust)
+\dontrun{
 require(VarSelLCM)
 data(banknote)
-results <- VarSelCluster(banknote[,-1], 2, parallel=FALSE)
+results <- VarSelCluster(banknote[,-1], 2, initModel=40)
 print(results)
+}
 }
 \seealso{
   \code{\link{print}}

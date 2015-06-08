@@ -1,23 +1,24 @@
 \docType{methods}
 \name{summary}
 \alias{summary}
-\alias{summary,VSLCMresults-method}
-\title{Produce result summary of a VSLCMresults class}
+\alias{summary,VSLCMresultsContinuous-method}
+\title{Produce result summary of a VSLCMresultsContinuous class}
 \arguments{
-  \item{object}{An object of class \code{\linkS4class{VSLCMresults}}}
+  \item{object}{An object of class \code{\linkS4class{VSLCMresultsContinuous}}}
 }
 \value{
   NULL. Summaries to standard out.
 }
 \description{
-  Produce result summary of a VSLCMresults class
+  Produce result summary of a VSLCMresultsContinuous class
 }
 \examples{
-require(mclust)
+\dontrun{
 require(VarSelLCM)
 data(banknote)
-results <- VarSelCluster(banknote[,-1], 2, parallel=FALSE)
+results <- VarSelCluster(banknote[,-1], 2, initModel=40)
 summary(results)
+}
 }
 \seealso{
   \code{\link{summary}}

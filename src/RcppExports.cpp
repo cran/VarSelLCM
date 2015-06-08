@@ -7,18 +7,14 @@
 using namespace Rcpp;
 
 // OptimizeMICL
-S4 OptimizeMICL(S4 obj, int optimize);
-RcppExport SEXP VarSelLCM_OptimizeMICL(SEXP objSEXP, SEXP optimizeSEXP) {
+S4 OptimizeMICL(S4 reference, StringVector name);
+RcppExport SEXP VarSelLCM_OptimizeMICL(SEXP referenceSEXP, SEXP nameSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< S4 >::type obj(objSEXP );
-        Rcpp::traits::input_parameter< int >::type optimize(optimizeSEXP );
-        S4 __result = OptimizeMICL(obj, optimize);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< S4 >::type reference(referenceSEXP);
+    Rcpp::traits::input_parameter< StringVector >::type name(nameSEXP);
+    __result = Rcpp::wrap(OptimizeMICL(reference, name));
+    return __result;
 END_RCPP
 }
