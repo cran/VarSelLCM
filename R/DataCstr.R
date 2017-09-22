@@ -1,16 +1,31 @@
 ########################################################################################################################
 ## Declaration et construction des classes S4 relatives aux donnees
 ########################################################################################################################
-
-
 ########################################################################################################################
 ## La classe S4 VSLCMdataContinuous est relatives a des donnees continues. Elle possede 5 slots:
+########################################################################################################################
 ## n: nombre d'observations
 ## d: nombre de variables
 ## data: matrix ou les colonnes sont numeric et correspondent aux donees
 ## notNA: matrix of logical valant 1 si la realisation est observee et 0 sinon
 ## priors: valeur des priors pour chaque variable (en ligne)
-########################################################################################################################
+##' Constructor of [\code{\linkS4class{VSLCMdataContinuous}}] class
+##'
+##'  
+##' \describe{
+##'   \item{n}{nombre d'observations.}
+##'   \item{d}{ nombre de variables.}
+##'   \item{data}{matrix ou les colonnes sont numeric et correspondent aux donees.}
+##'   \item{notNA}{matrix of logical valant 1 si la realisation est observee et 0 sinon.}
+##'   \item{priors}{valeur des priors pour chaque variable (en ligne).}
+##' }
+##'
+##' @examples
+##'   getSlots("VSLCMdataContinuous")
+##'
+##' @name VSLCMdataContinuous-class
+##' @rdname VSLCMdataContinous-class
+##' @exportClass VSLCMdataContinuous
 setClass(
   Class = "VSLCMdataContinuous", 
   representation = representation(
@@ -28,38 +43,291 @@ setClass(
     priors=matrix()
   )
 )
-
+########################################################################################################################
+########################################################################################################################
+## La classe S4 VSLCMdataInteger est relatives a des donnees entieres. Elle possede 5 slots:
+########################################################################################################################
+## n: nombre d'observations
+## d: nombre de variables
+## data: matrix ou les colonnes sont numeric et correspondent aux donees
+## notNA: matrix of logical valant 1 si la realisation est observee et 0 sinon
+## priors: valeur des priors pour chaque variable (en ligne)
+##' Constructor of [\code{\linkS4class{VSLCMdataInteger}}] class
+##'
+##'  
+##' \describe{
+##'   \item{n}{nombre d'observations.}
+##'   \item{d}{ nombre de variables.}
+##'   \item{data}{matrix ou les colonnes sont numeric et correspondent aux donees.}
+##'   \item{notNA}{matrix of logical valant 1 si la realisation est observee et 0 sinon.}
+##'   \item{priors}{valeur des priors pour chaque variable (en ligne).}
+##' }
+##'
+##' @examples
+##'   getSlots("VSLCMdataInteger")
+##'
+##' @name VSLCMdataInteger-class
+##' @rdname VSLCMdataInteger-class
+##' @exportClass VSLCMdataInteger
+setClass(
+  Class = "VSLCMdataInteger", 
+  representation = representation(
+    n="numeric",
+    d="numeric",
+    data="matrix",
+    notNA="matrix",
+    priors="matrix"
+  ), 
+  prototype = prototype(
+    n=numeric(),
+    d=numeric(),
+    data=matrix(),
+    notNA=matrix(),
+    priors=matrix()
+  )
+)
+########################################################################################################################
+## La classe S4 VSLCMdataCategorical est relatives a des donnees categorielles. Elle possede 6 slots:
+########################################################################################################################
+## n: nombre d'observations
+## d: nombre de variables
+## data: matrix ou les colonnes sont numeric et correspondent aux donees
+## notNA: matrix of logical valant 1 si la realisation est observee et 0 sinon
+## priors: valeur des priors pour chaque variable (en ligne)
+##' Constructor of [\code{\linkS4class{VSLCMdataCategorical}}] class
+##'
+##'  
+##' \describe{
+##'   \item{n}{nombre d'observations.}
+##'   \item{d}{ nombre de variables.}
+##'   \item{data}{matrix ou les facteurs orginiaux ont ete converti en numeric.}
+##'   \item{shortdata}{matrix contenant les profils uniques.}
+##'   \item{weightdata}{poids de chaque profil.}
+##'   \item{modalitynames}{list contenant les noms de modalites pour chaque variable.}
+##' }
+##'
+##' @examples
+##'   getSlots("VSLCMdataCategorical")
+##'
+##' @name VSLCMdataCategorical-class
+##' @rdname VSLCMdataCategorical-class
+##' @exportClass VSLCMdataCategorical
+setClass(
+  Class = "VSLCMdataCategorical", 
+  representation = representation(
+    n="numeric",
+    d="numeric",
+    data="matrix",
+    shortdata="matrix",
+    weightdata="numeric",
+    modalitynames="list"
+  ), 
+  prototype = prototype(
+    n=numeric(),
+    d=numeric(),
+    data=matrix(),
+    shortdata=matrix(),
+    weightdata=numeric(),
+    modalitynames=list()
+  )
+)
 
 
 ########################################################################################################################
-## La fonction VSLCMdata permet de construire un objet de class S4 VSLCMdataContinuous
+
+########################################################################################################################
+########################################################################################################################
+## La classe S4 VSLCdataMixed est relatives a des donnees mixtes. Elle possede 9 slots:
+########################################################################################################################
+## n : le nombre d'observations
+## d : le nombre de variables 
+## withContinuous : boolien qui indique si variables continues ou pas
+## withInteger : boolien qui indique si variables entieres ou pas
+## withCategorica : boolien qui indique si variables categorielles ou pas 
+## dataContinuous : objet de la calsse VSLCMdataContinuous pour la partie continue des donnees
+## dataInteger : objet de la classe VSLCMdataInteger pour la partie entiere des donnees
+## dataCategorical : objet de la classe VSLCMdataCategorical pour la partie categorielle des donnees
+## var.names : caracteres contenant les noms des variables 
+##' Constructor of [\code{\linkS4class{VSLCMdataMixed}}] class
+##' \describe{
+##' \item{n}{le nombre d'observations.}
+##' \item{d}{le nombre de variables.} 
+##' \item{withContinuous}{boolien qui indique si variables continues ou pas.}
+##' \item{withInteger}{boolien qui indique si variables entieres ou pas.}
+##' \item{withCategorica}{boolien qui indique si variables categorielles ou pas.} 
+##' \item{dataContinuous}{objet de la calsse VSLCMdataContinuous pour la partie continue des donnees.}
+##' \item{dataInteger}{objet de la classe VSLCMdataInteger pour la partie entiere des donnees.}
+##' \item{dataCategorical}{objet de la classe VSLCMdataCategorical pour la partie categorielle des donnees.}
+##' \item{var.names}{caracteres contenant les noms des variables.} 
+##' }
+##'
+##' @examples
+##'   getSlots("VSLCMdataMixed")
+##'
+##' @name VSLCMdataMixed-class
+##' @rdname VSLCMdataMixed-class
+##' @exportClass VSLCMdataMixed
+setClass(
+  Class = "VSLCMdataMixed", 
+  representation = representation(
+    n="numeric",
+    d="numeric",
+    withContinuous="logical",
+    withInteger="logical",
+    withCategorical="logical",
+    dataContinuous="VSLCMdataContinuous",
+    dataInteger="VSLCMdataInteger",
+    dataCategorical="VSLCMdataCategorical",
+    var.names="character"
+  ), 
+  prototype = prototype(
+    n=numeric(),
+    d=numeric(),
+    withContinuous=logical(),
+    withInteger=logical(),
+    withCategorical=logical(),
+    dataContinuous=new("VSLCMdataContinuous"),
+    dataInteger=new("VSLCMdataInteger"),
+    dataCategorical=new("VSLCMdataCategorical"),
+    var.names=character()
+  )
+)
+
+########################################################################################################################
+## La fonction VSLCMdata permet de construire un objet de class S4 VSLCMdataContinuous ou VSLCMdataCategorical en fonction
 ## de la nature des variables
 ########################################################################################################################
 VSLCMdata <- function(x, redquali=TRUE){
   # Ajout d'un nom de variable si celui-ci est manquant
   if (is.null(colnames(x))) colnames(x) <- paste("X",1:ncol(x), sep="")
-  
+  if (max(table(colnames(x)))>1) stop("At least two variables have the same name!")
   n <- nrow(x)
   d <- ncol(x)
   # recherche des indices de variables numeric et factor
   type <- numeric()
   for (j in 1:d) type[j] <- class(x[,j])
+  idxcont <- which(type=="numeric")
+  idxinte <- which(type=="integer")
+  idxcat <- which(type=="factor")
+  if ((all(type %in% c("numeric", "integer", "factor"))==FALSE))
+    stop("At least one variable is neither numeric, integer nor factor!")
   
-  if ((all(type %in% c("numeric", "integer"))==FALSE))
-    stop("At least one variable is neither numeric nor integer!")
+  # cas des variables categorielles
+  if (length(idxcat) == d){
+    shortdata <- matrix(NA, n, d)
+    for (j in 1:d){
+      lev <- levels(x[,j])
+      repere <- 0
+      for (h in 1:length(lev)){
+        repere <- repere + 1
+        shortdata[which(x[,j]==lev[h]),j] <- repere
+      }
+    }
+    weightdata <- rep(1, n)
+    ## Pour travailler avec Armadillo on rempli artificellement les NA par 0
+    shortdata[is.na(shortdata)] <- 0
+    if (redquali==TRUE){
+      shortdata <- uniquecombs(shortdata)
+      weightdata <- as.numeric(table(attr(shortdata,"index")))
+    }
+    colnames(shortdata) <- colnames(x)
+    modalitynames <- list()
+    for (j in 1:d){
+      modalitynames[[j]] <- levels(x[,j])
+      if (length(modalitynames[[j]]) != length(unique(x[which(is.na(x[,j])==FALSE),j])))
+        stop(paste("The number of observed modalities is not equal to the number of levels for variable", colnames(x)[j]))
+    }
+    output <-  new("VSLCMdataCategorical", n=n, d=d, data=as.matrix(x), shortdata=shortdata, weightdata=weightdata, modalitynames=modalitynames)
+  }else  if (length(idxcont) == d){ 
+    mat <- apply(x, 2, as.numeric)
+    # construction des priors
+    priors <- matrix(1, d, 4)
+    priors[,4] <- 1/100
+    priors[,3] <- colMeans(x, na.rm = T)
+    colnames(priors) <- c("alpha", "beta", "lambda", "delta")
+    ## Pour travailler avec Armadillo on rempli artificellement les NA par 0
+    notNA <- (is.na(x)==FALSE)*1
+    mat[is.na(mat)] <- 0
+    colnames(mat) <-  colnames(x)
+    colnames(notNA) <- colnames(x)
+    output <-  new("VSLCMdataContinuous", n=n, d=d, data=mat, notNA=notNA, priors=priors)    
+  }else  if (length(idxinte) == d){ 
+    mat <- apply(x, 2, as.numeric)
+    # construction des priors
+    priors <- matrix(1, d, 2)
+    colnames(priors) <- c("alpha", "beta")
+    ## Pour travailler avec Armadillo on rempli artificellement les NA par 0
+    notNA <- (is.na(x)==FALSE)*1
+    mat[is.na(mat)] <- 0
+    colnames(mat) <-  colnames(x)
+    colnames(notNA) <- colnames(x)
+    output <-  new("VSLCMdataInteger", n=n, d=d, data=mat, notNA=notNA, priors=priors)    
+  }else{
+    output <- list(continuous=new("VSLCMdataContinuous"), integer=new("VSLCMdataInteger"), categorical=new("VSLCMdataCategorical"))
+    if (length(idxcont) != 0){
+      tmpdata <- data.frame(x[,idxcont])
+      colnames(tmpdata) <- colnames(x)[idxcont]
+      output$continuous <- VSLCMdata(tmpdata)
+    }
+    if (length(idxinte) != 0){
+      tmpdata <- data.frame(x[,idxinte])
+      colnames(tmpdata) <- colnames(x)[idxinte]
+      output$integer <- VSLCMdata(tmpdata)
+    }
+    if (length(idxcat) != 0){
+      tmpdata <- data.frame(x[,idxcat])
+      colnames(tmpdata) <- colnames(x)[idxcat]      
+      output$categorical <- VSLCMdata(tmpdata, redquali=FALSE)
+    }
+    
+    output <- new("VSLCMdataMixed", n=n, d=d, 
+                  withContinuous=(length(idxcont) != 0),  withInteger=(length(idxinte) != 0), withCategorical=(length(idxcat) != 0),
+                  dataContinuous=output$continuous, dataInteger=output$integer, dataCategorical=output$categorical,   var.names=colnames(x)
+    )
+  }
+  return(output)
+}
+########################################################################################################################
+## La fonction VSLCMdata permet de construire un objet de class S4 VSLCMdataContinuous ou VSLCMdataCategorical en fonction
+## de la nature des variables
+########################################################################################################################
+VSLCMdataMixte <- function(x, redquali=TRUE){
+  # Ajout d'un nom de variable si celui-ci est manquant
+  if (is.null(colnames(x))) colnames(x) <- paste("X",1:ncol(x), sep="")
+  if (max(table(colnames(x)))>1) stop("At least two variables have the same name!")
+  n <- nrow(x)
+  d <- ncol(x)
+  # recherche des indices de variables numeric et factor
+  type <- numeric()
+  for (j in 1:d) type[j] <- class(x[,j])
+  idxcont <- which(type=="numeric")
+  idxinte <- which(type=="integer")
+  idxcat <- which(type=="factor")
+  if ((all(type %in% c("numeric", "integer", "factor"))==FALSE))
+    stop("At least one variable is neither numeric, integer nor factor!")
   
-  mat <- apply(x, 2, as.numeric)
-  # construction des priors
-  priors <- matrix(1, d, 4)
-  priors[,4] <- 1/100
-  priors[,3] <- colMeans(x, na.rm = T)
-  colnames(priors) <- c("alpha", "beta", "lambda", "delta")
-  ## Pour travailler avec Armadillo on rempli artificellement les NA par 0
-  notNA <- (is.na(x)==FALSE)*1
-  mat[is.na(mat)] <- 0
-  colnames(mat) <-  colnames(x)
-  colnames(notNA) <- colnames(x)
-  output <-  new("VSLCMdataContinuous", n=n, d=d, data=mat, notNA=notNA, priors=priors)    
+
+    output <- list(continuous=new("VSLCMdataContinuous"), integer=new("VSLCMdataInteger"), categorical=new("VSLCMdataCategorical"))
+    if (length(idxcont) != 0){
+      tmpdata <- data.frame(x[,idxcont])
+      colnames(tmpdata) <- colnames(x)[idxcont]
+      output$continuous <- VSLCMdata(tmpdata)
+    }
+    if (length(idxinte) != 0){
+      tmpdata <- data.frame(x[,idxinte])
+      colnames(tmpdata) <- colnames(x)[idxinte]
+      output$integer <- VSLCMdata(tmpdata)
+    }
+    if (length(idxcat) != 0){
+      tmpdata <- data.frame(x[,idxcat])
+      colnames(tmpdata) <- colnames(x)[idxcat]      
+      output$categorical <- VSLCMdata(tmpdata, redquali=FALSE)
+    }
+    
+    output <- new("VSLCMdataMixed", n=n, d=d, 
+                  withContinuous=(length(idxcont) != 0),  withInteger=(length(idxinte) != 0), withCategorical=(length(idxcat) != 0),
+                  dataContinuous=output$continuous, dataInteger=output$integer, dataCategorical=output$categorical,   var.names=colnames(x)
+    )
   
   return(output)
 }

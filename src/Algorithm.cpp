@@ -24,8 +24,8 @@ void Algorithm::InitCommumParamAlgo(const int & g, const int & nbinit, const int
 void Algorithm::Run(S4 * output_p){
   if (vbleSelec){
     double prec = log(0);
-    int cvrate=0;
     m_omegaBest = omegainit.col(0);
+    int cvrate=0;
     for (int ini=0; ini<omegainit.n_cols; ini++){
       m_omegaCurrent = omegainit.col(ini);
       if (sum(m_omegaCurrent)==0)
@@ -34,6 +34,7 @@ void Algorithm::Run(S4 * output_p){
       zCandInit();
       m_miclCurrent = Integre_Complete_Like_Cand();
       while (prec < m_miclCurrent){
+        // cout << trans(m_omegaCurrent ) << " " << m_miclCurrent << endl;
         prec = m_miclCurrent;
         Optimize_partition();
         Optimize_model();
@@ -50,16 +51,44 @@ void Algorithm::Run(S4 * output_p){
     as<S4>(output_p->slot("model")).slot("omega") = wrap(trans(m_omegaBest));
     as<S4>(output_p->slot("partitions")).slot("zOPT") = wrap(trans(m_zStarBest));
     as<S4>(output_p->slot("criteria")).slot("MICL") = m_miclBest;  
-    output_p->slot("cvrate") = cvrate;  
+    as<S4>(output_p->slot("criteria")).slot("cvrate") = cvrate;  
   }
 }
 
+void Algorithm::ComputeMICL(S4 * output_p){
+  double prec = log(0);
+  Col<double> tmp = as<S4>(output_p->slot("model")).slot("omega");
+  //Col<double> tmp2= as<S4>(output_p->slot("partitions")).slot("zMAP");
+  m_omegaCurrent = tmp;
+  m_omegaBest= tmp;
+  for (int ini=0; ini<50; ini++){
+    prec = log(0);
+    m_omegaCurrent = tmp;
+    //m_zCandCurrent = tmp2-1;
+    //m_zStarCurrent = m_zCandCurrent;
+    zCandInit();
+    m_miclCurrent = Integre_Complete_Like_Cand();
+    while (prec < m_miclCurrent){
+      prec = m_miclCurrent;
+      Optimize_partition();
+      Optimize_partition();
+      Optimize_partition();
+    }
+    if (m_miclCurrent > m_miclBest){
+      m_miclBest = m_miclCurrent;
+      m_zStarBest = m_zStarCurrent;
+    }
+  }
+  as<S4>(output_p->slot("partitions")).slot("zOPT") = wrap(trans(m_zStarBest));
+  as<S4>(output_p->slot("criteria")).slot("MICL") = m_miclBest;
+}
+
 void Algorithm::Optimize_partition(){
-  int chgt = m_zCandCurrent.n_rows*2 ;
+  int chgt = m_zCandCurrent.n_rows ;
   double critere_cand=0;
   m_zCandCurrent = m_zStarCurrent;
   while (chgt > 0 ){
-    ivec who = randi<ivec>(chgt*2, distr_param(0,  m_zStarBest.n_rows -1));
+    ivec who = randi<ivec>(chgt, distr_param(0,  m_zStarBest.n_rows -1));
     chgt = 0;
     for (int it=0; it < who.n_rows; it++){ 
       for (int k=0; k<m_g; k++){

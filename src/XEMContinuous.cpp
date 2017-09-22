@@ -5,7 +5,7 @@ Col<double> dlogGaussian(const Col<double> & x, const Col<double> & o, const dou
   Col<double>tmpval= - 0.5*pow((x - mu),2)/pow(sd,2) - log(sd * sqrt( 2*M_PI));
   if (sum(o)<x.n_rows)  tmpval(find( o == 0)) = zeros<vec>(x.n_rows-sum(o));
   return  tmpval;
-};
+}
 
 XEMContinuous::XEMContinuous(const DataContinuous * datapasse, const S4 * reference_p){
   paramEstim = as<S4>(reference_p->slot("strategy")).slot("paramEstim");
@@ -39,13 +39,6 @@ void XEMContinuous::ComputeTmpLogProba(){
   }
 }
 
-int XEMContinuous::FiltreDegenere(){
-  int output = 0;
-  if (min(min(paramCurrent_p->m_sd))<0.000001)
-  output = 1;
-  return output;
-}
-
 void XEMContinuous::Mstep(){
   paramCurrent_p->m_pi = trans(sum(tmplogproba,0));
   paramCurrent_p->m_pi = paramCurrent_p->m_pi / sum(paramCurrent_p->m_pi);
@@ -55,6 +48,7 @@ void XEMContinuous::Mstep(){
       paramCurrent_p->m_mu(k,j) = sum(data_p->m_x.col(location(j)) % m_weightTMP ) / sum(m_weightTMP);
       paramCurrent_p->m_sd(k,j) = sqrt(sum( pow(data_p->m_x.col(location(j)) - paramCurrent_p->m_mu(k,j),2) % m_weightTMP) / sum(m_weightTMP));
     }
+    if (any(paramCurrent_p->m_sd.row(k)<0.0001)) {degeneracy=1;}
   }
 }
 
@@ -93,8 +87,5 @@ void XEMContinuous::Output(S4 * reference_p){
     }else{
       as<S4>(reference_p->slot("criteria")).slot("degeneracyrate") = 1;
     }
-    
   }
 }
-
-

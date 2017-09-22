@@ -20,6 +20,9 @@ class ParamContinuous : public Param{
   ParamContinuous();
   ParamContinuous(const ParamContinuous & param);
   ParamContinuous(const DataContinuous *, const colvec & , const int &);
+  ParamContinuous(const DataContinuous *, const colvec & , const int &, ivec);
   ~ParamContinuous(){};
+  void egalise(const colvec );
+
 };
 #endif

@@ -46,7 +46,8 @@ class Algorithm{
   void InitCommumParamAlgo(const int &, const int &, const int &, const int &) ;
   // Effectue la selection de variables (si vbleSelec=TRUE) et actualise les sorties
   void Run(S4 *);
-
+  // Calcul MICL pour un modèle fixe
+  void ComputeMICL(S4 *);
   // Optimisation de la partition m_zStarCurrent pour le modèle m_omegaCurrent
   void Optimize_partition();
   
