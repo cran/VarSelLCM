@@ -42,3 +42,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_VarSelLCM_OptimizeMICL", (DL_FUNC) &_VarSelLCM_OptimizeMICL, 2},
+    {"_VarSelLCM_ComputeMICL", (DL_FUNC) &_VarSelLCM_ComputeMICL, 2},
+    {"_VarSelLCM_OptimizePenLike", (DL_FUNC) &_VarSelLCM_OptimizePenLike, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_VarSelLCM(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

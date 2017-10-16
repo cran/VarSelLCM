@@ -2,8 +2,8 @@ Package: VarSelLCM
 Type: Package
 Title: Variable Selection for Model-Based Clustering of Continuous,
         Count, Categorical or Mixed-Type Data Set with Missing Values
-Version: 2.0
-Date: 2017-09-22
+Version: 2.0.1
+Date: 2017-10-16
 Author: Matthieu Marbac and Mohammed Sedki
 Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
 Description: Variable Selection for model-based clustering managed by the Latent
@@ -26,8 +26,8 @@ LazyLoad: yes
 Collate: 'CheckInputs.R' 'DataCstr.R' 'VSLCMGrlClasses.R' 'ICLexact.R'
         'DesignOutput.R' 'Summary.R' 'Print.R' 'VarSelLCM.R'
         'RcppExports.R' 'Plot.R' 'Imputation.R' 'withoutmixture.R'
-Packaged: 2017-09-22 15:23:18 UTC; sedki
+Packaged: 2017-10-16 09:57:10 UTC; sedki
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2017-09-22 15:38:18 UTC
+Date/Publication: 2017-10-16 10:16:53 UTC

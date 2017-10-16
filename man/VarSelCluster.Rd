@@ -41,8 +41,32 @@ This function performs the variable selection and the maximum likelihood estimat
 }
 \examples{
 \dontrun{
-data(iris)
-res.LCM <- VarSelCluster(x, 2)
-summary(res.LCM)
+equire(VarSelLCM)
+
+# Data loading:
+# x contains the observed variables
+# z the known statu (i.e. 1: absence and 2: presence of heart disease)
+data(heart)
+z <- heart[,"Class"]
+x <- heart[,-13]
+
+# Cluster analysis without variable selection
+res_without <- VarSelCluster(x, 2, vbleSelec = FALSE)
+
+# Cluster analysis with variable selection (with parallelisation)
+res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
+
+# Confusion matrices: variable selection decreases the misclassification error rate
+print(table(z, res_without@partitions@zMAP))
+print(table(z, res_with@partitions@zMAP))
+
+# Summary of the best model
+summary(res_with)
+
+# Parameters of the best model
+print(res_with)
+
+# Plot of the best model
+plot(res_with)
 }
 }

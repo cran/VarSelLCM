@@ -1,5 +1,5 @@
-34eb9fda5c6796fca0e2a9e0f93b29a1 *DESCRIPTION
-5896a6daffacf10c80eff8b1eec08902 *NAMESPACE
+e99ef71f540fdcf7d974db0523618605 *DESCRIPTION
+051306325e253ac0c8fa69d5db5acdf7 *NAMESPACE
 f25d00c6bb38077f577ca5acf12dba38 *R/CheckInputs.R
 b0321107607955d490a89d725b90022f *R/DataCstr.R
 a2041f895e811b94e2a2f3cf54982768 *R/DesignOutput.R
@@ -50,7 +50,7 @@ b474e48bb1ecddd9d44fc57b396fde6e *man/VSLCMresultsCategorical-class.Rd
 8fed0639595b7076d16b6994b34bb0d7 *man/VSLCMresultsInteger-class.Rd
 c1273b3979edc8152add41960ac88b85 *man/VSLCMresultsMixed-class.Rd
 df93bb6e070f5a6bda1ccc57973909e7 *man/VSLCMstrategy-class.Rd
-62366ed79654848b95b1e7b97acf0585 *man/VarSelCluster.Rd
+cb26317fe04bb5d74f3d277f098674d5 *man/VarSelCluster.Rd
 c8cd334542e7e0e48311e1ba256f2dfa *man/VarSelLCM-package.Rd
 348ea29f312c5f2f6e37895be18eb599 *man/heart.Rd
 b0bb40c91432cbc99185c5b08ea68a33 *man/summary-methods.Rd
@@ -69,8 +69,7 @@ ec5d7c5c491e0589a43242c40bc79384 *src/Makevars
 db7fb488c152ea2c5b931d3b52819119 *src/ParamContinuous.cpp
 adf92ae0bc9b79fcd648b15d6f5b6f66 *src/ParamInteger.cpp
 a397e90f9cd91a7964f2d952ac64c631 *src/ParamMixed.cpp
-d4038bcc8d424c754012e54d9d726a2a *src/RcppExports.cpp
-13c3a58cb2e93ba2675597b9cc833438 *src/VarSelLCM-init.c
+9aa5c5442d839e65c953ec0c861fdf7f *src/RcppExports.cpp
 3f889c28b24d79f6d033154934b715b5 *src/VarSelLCMmixte.cpp
 2a587ae14a4c6ae0a7c8a59354ced38d *src/XEM.cpp
 ac6b8358940c02dbba2cc718ece2c784 *src/XEMCategorical.cpp
