@@ -1,0 +1,33 @@
+citHeader("To cite 'VarSelLCM' R package in publications, please use::")
+
+bibentry(bibtype = "Article",
+         title = "Variable selection for model-based clustering using the integrated completed-data likelihood.",
+         author = personList(person(given="Matthieu", family="Marbac"),
+                             person(given="Mohammed", family="Sedki")),
+         journal = "Statistics and Computing",
+         year = "2017",
+         volume = "27",
+         number = "4",
+         pages = "1049-1063",
+         #
+         textVersion =
+           paste("Marbac, M. and Sedki, M. (2017)",
+                 "Variable selection for model-based clustering using the integrated completed-data likelihood,",
+                 "Statistics and Computing,", 
+                 "27 (4), pp. 1049-1063"))
+
+
+
+bibentry(bibtype = "Article",
+         title = "Variable selection for model-based clustering using the integrated completed-data likelihood.",
+         author = personList(person(given="Matthieu", family="Marbac"),
+                             person(given="Etienne", family="Patin"),  
+                             person(given="Mohammed", family="Sedki")),
+         journal = "Arxiv",
+         year = "2018",
+         volume = "",
+         number = "",
+         pages = "",
+         #
+         textVersion =
+           paste("Marbac, M. and Patin, E. and Sedki, M. (2018).","Variable selection for mixed data clustering: Application in human population genomics.", "Arxiv 1703.02293."))

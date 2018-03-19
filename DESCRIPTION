@@ -1,33 +1,27 @@
 Package: VarSelLCM
 Type: Package
-Title: Variable Selection for Model-Based Clustering of Continuous,
-        Count, Categorical or Mixed-Type Data Set with Missing Values
-Version: 2.0.1
-Date: 2017-10-16
+Title: Variable Selection for Model-Based Clustering of Mixed-Type Data
+        Set with Missing Values
+Version: 2.1.0
+Date: 2018-03-14
 Author: Matthieu Marbac and Mohammed Sedki
 Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
-Description: Variable Selection for model-based clustering managed by the Latent
-    Class Model. This model analyses mixed-type data (data with continuous and/
-    or count and/or categorical variables) with missing values (missing at random)
-    by assuming independence between classes. The one-dimensional marginals of
-    the components follow standard distributions for facilitating both the model
-    interpretation and the model selection. The variable selection is led by an
-    alternated optimization procedure for maximizing the Maximum Integrated 
-    Complete-data Likelihood criterion. The maximum likelihood inference is done 
-    by an EM algorithm for the selected model. This package also performs the 
-    imputation of missing values by taking the expectation of the missing values 
-    conditionally on the model, its parameters and on the observed variables.
+Description: Full model selection (detection of the relevant features and estimation of the number of clusters) for model-based clustering<doi:10.1007/s11222-016-9670-1>. Data to analyze can be continuous, categorical, integer or mixed. Moreover, missing values can occur and do not necessitate any pre-processing. Shiny application permits an easy interpretation of the results.
 License: GPL (>= 2)
-Imports: methods, Rcpp (>= 0.11.1), parallel, mgcv
+Imports: methods, Rcpp (>= 0.11.1), parallel, mgcv, ggplot2, shiny
 URL: http://varsellcm.r-forge.r-project.org/
 LinkingTo: Rcpp, RcppArmadillo
 ByteCompile: true
 LazyLoad: yes
-Collate: 'CheckInputs.R' 'DataCstr.R' 'VSLCMGrlClasses.R' 'ICLexact.R'
-        'DesignOutput.R' 'Summary.R' 'Print.R' 'VarSelLCM.R'
-        'RcppExports.R' 'Plot.R' 'Imputation.R' 'withoutmixture.R'
-Packaged: 2017-10-16 09:57:10 UTC; sedki
+Collate: 'CheckInputs.R' 'data.R' 'model.R' 'param.R' 'results.R'
+        'ICLexact.R' 'DesignOutput.R' 'Summary.R' 'Print.R'
+        'VarSelLCM.R' 'RcppExports.R' 'Plot.R' 'Imputation.R'
+        'withoutmixture.R' 'VarSelShiny.R' 'ARI.R' 'VarSelConvert.R'
+Packaged: 2018-03-19 07:47:33 UTC; sedki
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2017-10-16 10:16:53 UTC
+Date/Publication: 2018-03-19 08:37:44 UTC
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+BuildVignettes: yes

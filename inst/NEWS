@@ -1,0 +1,11 @@
+Version 2.1 (2018-03)
+    o Interface Shiny is available to analyze the clustering results (use function VarSelShiny on the clustering output).
+    o Modification of the class returned by the clustering function (results obtained by old version of VarSelLCM need to be convert by using the function VarSelConvert).
+    o Modification of the plot functions (ggplot2).
+    o Imputation fonction permits the imputation of missing values based on the model parameters (use function VarSelImputation).
+
+Version 2.0 (2017-10)
+    o Mixed-data are allowed (continuous, integer and categorical).
+    o Missing values can be managed by assuming that values are missing completly at random.
+    o Model selection can be done with BIC (optimized by a specific EM algorithm).
+

@@ -1,102 +1,22 @@
 ########################################################################################################################
-## Surcharge de la fonction print pour les objects de classe S4 VSLCMresultsContinuous et VSLCMresultsCategorical
+## Surcharge de la fonction print 
 ########################################################################################################################
-
-## Surcharge pour VSLCMresultsContinuous
-setMethod(
-  f="print",
-  signature = c("VSLCMresultsContinuous"),
-  definition = function(x){
-    summary(x)    
-    if (x@criteria@degeneracyrate != 1){
-      cat("\n Parameters of the relevant variables:\n")
-      for (k in 1:x@model@g){
-        if (k>1){
-          cat("*******************\n")
-        }
-        cat("Class",k,"\n")
-        cat("Proportion:",x@param@pi[k],"\n")
-        tmp <- data.frame(mean=x@param@mu[,k], sd=x@param@sd[,k])
-        if (any(x@model@omega==1))
-          print(tmp[which(x@model@omega==1),])
-        cat("\n")
-      }
-      if (any(x@model@omega==0)){
-        cat("\n Parameters of the irrelevant variables:\n")
-        print(tmp[which(x@model@omega==0),])
-      }
-    }
-  }
-)
-
-## Surcharge pour VSLCMresultsInteger
-setMethod(
-  f="print",
-  signature = c("VSLCMresultsInteger"),
-  definition = function(x){
-    summary(x)    
-    if (x@criteria@degeneracyrate != 1){
-      cat("\n Parameters of the relevant variables:\n")
-      for (k in 1:x@model@g){
-        if (k>1){
-          cat("*******************\n")
-        }
-        cat("Class",k,"\n")
-        cat("Proportion:",x@param@pi[k],"\n")
-        tmp <- data.frame(lambda=x@param@lambda[,k])
-        if (any(x@model@omega==1))
-          print(tmp[which(x@model@omega==1),])
-        cat("\n")
-      }
-      if (any(x@model@omega==0)){
-        cat("\n Parameters of the irrelevant variables:\n")
-        print(tmp[which(x@model@omega==0),])
-      }
-    }
-  }
-)
+#'
+#' Summary function.
+#' 
+#' This function gives the print of an instance of  \code{\linkS4class{VSLCMresults}}.
+#' 
+#' @param x instance of \code{\linkS4class{VSLCMresults}}.
+#' 
+#' @name print
+#' @rdname print-methods
+#' @docType methods
+#' @exportMethod print
+#' @aliases print print,VSLCMresults-method
 
 setMethod(
   f="print",
-  signature = c("VSLCMresultsCategorical"),
-  definition = function(x){
-    summary(x)    
-    cat("\n Parameters of the relevant variables:\n")
-    for (k in 1:x@model@g){
-      if (k>1){
-        cat("*******************\n")
-      }
-      cat("Class",k,"\n")
-      cat("Proportion:",x@param@pi[k],"\n")
-      maxcol <- 0
-      for (j in 1:x@data@d) maxcol <- max(maxcol, length(x@data@modalitynames[[j]]))
-      alpha <- matrix(0,x@data@d, maxcol)
-      for (j in 1:x@data@d)  alpha[j,1:length(x@data@modalitynames[[j]])] <- round(x@param@alpha[[j]][k,],6)
-      for (j in 1:ncol(alpha)) alpha[,j] <- as.character(alpha[,j])
-      for (j in 1:x@data@d){
-        if (length(x@data@modalitynames[[j]])<maxcol)
-          alpha[j, (length(x@data@modalitynames[[j]])+1):maxcol] <- rep(".", maxcol-length(x@data@modalitynames[[j]]))
-        
-      }
-      alpha <- data.frame(alpha)
-      colnames(alpha) <- paste("Level",1:ncol(alpha),sep=".")
-      rownames(alpha) <- names(x@param@alpha)
-      if (any(x@model@omega==1))
-        print(alpha[which(x@model@omega==1),])
-      cat("\n")
-    }
-    if (any(x@model@omega==0)){
-      cat("\n Parameters of the irrelevant variables:\n")
-      print(alpha[which(x@model@omega==0),])
-    }
-  }
-)
-
-
-## Surcharge pour VSLCMresultsContinuous
-setMethod(
-  f="print",
-  signature = c("VSLCMresultsMixed"),
+  signature = c("VSLCMresults"),
   definition = function(x){
     summary(x)    
     if (x@criteria@degeneracyrate != 1){

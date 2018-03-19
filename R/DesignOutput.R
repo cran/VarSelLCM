@@ -106,7 +106,6 @@ setMethod( f = "DesignOutput",
            definition = function(reference){
              reference@model@omega <-  as.numeric(reference@model@omega)
              names(reference@model@omega) <- colnames(reference@data@data)
-             
              if (reference@model@g>1){
                if (reference@strategy@paramEstim == TRUE){
                  if (reference@strategy@vbleSelec==FALSE){
@@ -155,7 +154,7 @@ setMethod( f = "DesignOutput",
 
 ## Cas des variables mixed
 setMethod( f = "DesignOutput", 
-           signature(reference="VSLCMresultsMixed"), 
+           signature(reference="VSLCMresults"), 
            definition = function(reference){
              reference@model@omega <-  as.numeric(reference@model@omega)
              namestmp <- numeric()

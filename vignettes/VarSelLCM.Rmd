@@ -1,0 +1,104 @@
+---
+title: "VarSelLCM"
+author: "Variable Selection for Model-Based Clustering of Mixed-Type Data Set with  Missing Values"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette VarSelLCM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+**References:** 
+
+* Marbac, M. and Sedki, M. (2017), [Variable selection for model-based clustering using the integrated complete-data likelihood](https://link.springer.com/article/10.1007/s11222-016-9670-1), Statistics and Computing, Volume 27, Issue 4, pp 1049–1063.
+* Marbac, M., Patin, E. and Sedki, M. (2018), [Variable selection for mixed data clustering: Application in human population genomics](https://arxiv.org/abs/1703.02293), Arxiv 1703.02293.
+
+# Introduction
+*[VarSelLCM](https://CRAN.R-project.org/package=VarSelLCM)* permits a full model selection (detection of the relevant features for clustering and selection of the number of clusters) in model-based clustering, according to classical information criteria (BIC, MICL or AIC).
+
+Data to analyzed can be composed of continuous, integer and/or categorical features. Moreover, missing
+values are managed, without any pre-processing, by the model used to cluster with the assumption that
+values are missing completely at random. 
+Thus, VarSelLCM can also be used for data imputation via mixture models. 
+
+An R-Shiny application is implemented to easily interpret the clustering results
+
+
+# Mixed-type data analysis
+
+This section performs the whole analysis of the *Heart* data set. *Warning continuous features must be stored in numeric, integer features must be stored in integer and categorical features must be stored in factor.*
+```{r, comment=""}
+library(VarSelLCM)
+# Data loading
+data("heart")
+head(heart)
+```
+
+Clustering is performed with variable selection. 
+Model selection is done with BIC because n>>d.
+The number of components is between 1 and 4.
+Do not hesitate to use parallelisation (here only two cores are used).
+
+```{r, comment=""}
+# Add a missing value artificially (just to show that it works!)
+heart[1,1] <- NA
+# Clustering with variable selection and a number of cluster betwee 1 and 4
+# Model selection is BIC (to use MICL, the option must be specified)
+out <- VarSelCluster(heart[,-13], 1:4, nbcores = 2)
+```
+
+Now, all the results can be analyzed by the Shiny application...
+```{r, eval=FALSE, comment="", include=TRUE}
+# Start the shiny application
+ VarSelShiny(out)
+```
+
+... but this analysis can also be done on R.
+
+To get a summary of the selected model.
+```{r, comment=""}
+# Summary of the best model
+summary(out)
+```
+
+Model interpretation should focus on the most discriminative variables. 
+These variables can be found with the following plot.
+```{r, comment=""}
+# Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+plot(out, type="bar")
+```
+
+Interpretation of the most discriminative variable is based on its distribution per cluster.
+```{r, comment=""}
+# Boxplot for continuous (or interger) variable
+plot(out, y="MaxHeartRate", type="boxplot")
+```
+
+We can check that the distribution used to cluster is relevant.
+```{r, comment=""}
+# Empirical and theoretical distributions (to check that clustering is pertinent)
+plot(out, y="MaxHeartRate", type="cdf")
+```
+
+Interpretation of a categorical variable is based on its distribution per cluster.
+```{r, comment=""}
+# Summary of categorical variable
+plot(out, y="Sex")
+```
+
+Interpretation of the cluster overlaps by using the probabilities of missclassification.
+```{r, comment=""}
+# Summary of the probabilities of missclassification
+plot(out, type="probs-class")
+```
+
+Missing values can be imputed.
+```{r, comment=""}
+# Imputation by posterior mean for the first observation
+not.imputed <- heart[1,-13]
+imputed <- VarSelImputation(out)[1,]
+rbind(not.imputed, imputed)
+```

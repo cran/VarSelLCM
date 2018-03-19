@@ -1,24 +1,25 @@
 
-##' Variable Selection in model-based clustering managed by the Latent Class Model for analysis mixed-type data with missing values.
+##'  Variable Selection for Model-Based Clustering of Mixed-Type Data Set with Missing Values
 ##'
-##' The package uses a finite mixture model for analyzing mixed-type data (data with continuous and/or count and/or categorical variables) with missing values (missing at random) by assuming independence between classes. The one-dimensional marginals of the components follow standard distributions for facilitating both the model interpretation and the model selection. The variable selection is led by an alternated optimization procedure for maximizing the MICL criterion. The maximum likelihood inference is done by an EM algorithm for the selected model. This package also performs the imputation of missing values.
+##' Model-based clustering with variable selection and estimation of the number of clusters. Data to analyze can be continuous, categorical, integer or mixed. Moreover, missing values can occur and do not necessitate any pre-processing. Shiny application permits an easy interpretation of the results.
 ##'
 ##' \tabular{ll}{
 ##'   Package: \tab VarSelLCM\cr 
 ##'   Type: \tab Package\cr 
-##'   Version: \tab 2.0.0\cr
-##'   Date: \tab 2016-04-18\cr 
-##'   License: \tab GPL-2\cr 
+##'   Version: \tab 2.1.0\cr
+##'   Date: \tab 2018-03-14\cr 
+##'   License: \tab GPL-3\cr  
 ##'   LazyLoad: \tab yes\cr
 ##'   URL:  \tab http://varsellcm.r-forge.r-project.org/\cr
-
 ##' }
 ##'
-##' The main function to use is \link{VarSelCluster}. 
+##' The main function to use is \link{VarSelCluster}. Function \link{VarSelCluster} carries out the model selection (according to AIC, BIC or MICL) and maximum likelihood estimation.
 ##' 
-##' Function \link{VarSelCluster} carries out the model selection by maximizing the MICL criterion, then it performs the maximum likelihood estimation of the selected model via an EM algorithm.
+##' Function \link{VarSelShiny} runs a shiny application which permits an easy interpretation of the clustering results.
 ##' 
-##' Tool methods \link{summary}, \link{print} and \link{plot} are available for facilitating the interpretation.
+##' Function \link{VarSelImputation} permits the imputation of missing values by using the model parameters. 
+##' 
+##' Tool methods \link{summary}, \link{print} and \link{plot} are also available for facilitating the interpretation.
 ##' 
 ##' @name VarSelLCM-package
 ##' @aliases VarSelLCM
@@ -28,15 +29,19 @@
 ##' @import parallel
 ##' @import Rcpp
 ##' @import methods
+##' @import ggplot2
+##' @import shiny
 ##' @importFrom mgcv uniquecombs
 ##' @importFrom graphics barplot mtext par
-##' @importFrom stats dnorm dpois integrate sd runif 
+##' @importFrom stats dnorm dpois integrate sd runif pnorm ppois rnorm rpois
 ##' @useDynLib VarSelLCM
 ##'
 ##' @author
 ##' Matthieu Marbac and Mohammed Sedki Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
 ##'
-##' @references M. Marbac and M. Sedki (2015). Variable selection for model-based clustering using the integrated completed-data likelihood. Preprint.
+##' @references Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
+##' 
+##' Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Arxiv 1703.02293.
 ##' 
 ##' @examples
 ##' \dontrun{
@@ -56,9 +61,11 @@
 ##' # Cluster analysis with variable selection (with parallelisation)
 ##' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
 ##' 
-##' # Confusion matrices: variable selection decreases the misclassification error rate
+##' # Confusion matrices and ARI: variable selection decreases the misclassification error rate
 ##' print(table(z, res_without@partitions@zMAP))
 ##' print(table(z, res_with@partitions@zMAP))
+##' ARI(z, res_without@partitions@zMAP)
+##' ARI(z, res_with@partitions@zMAP)
 ##' 
 ##' # Summary of the best model
 ##' summary(res_with)
@@ -66,42 +73,50 @@
 ##' # Parameters of the best model
 ##' print(res_with)
 ##' 
-##' # Plot of the best model
-##' plot(res_with)
+##' # Opening Shiny application to easily see the results
+##' VarSelShiny(res_with)
+##' 
+##' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+##' plot(out, type="bar")
+##' # Boxplot for continuous (or interger) variable
+##' plot(out, y="MaxHeartRate", type="boxplot")
+##'
+##' # Empirical and theoretical distributions (to check that clustering is pertinent)
+##' plot(out, y="MaxHeartRate", type="cdf")
+##'
+##'# Summary of categorical variable
+##' plot(out, y="Sex")
+##' 
+##' # Summary of the probabilities of missclassification
+##' plot(out, type="probs-class")
+##' 
+##' # Imputation by posterior mean for the first observation
+##' not.imputed <- heart[1,-13]
+##' imputed <- VarSelImputation(out)[1,]
+##' rbind(not.imputed, imputed)
 ##' 
 ##' }
 ##' 
 NULL
 
-
-###################################################################################
-##' This function performs the variable selection and the maximum likelihood estimation of the Latent Class Model
-##'
-##' @param x data.frame. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor".
-##' @param g numeric. It defines number of components.
-##' @param vbleSelec logical. It indicates if a variable selection is done (TRUE: yes, FALSE: no; default is 1).
-##' @param crit.varsel character. It defines the information criterion used for the variable selection ("AIC", "BIC" or "MICL"; only used if vbleSelec=1; default is "BIC").
-##' @param initModel numeric. It gives the number of initializations of the alternated algorithm maximizing the MICL criterion (only used if crit.varsel="MICL"; default is 50)
-##' @param nbcores numeric.  It defines the numerber of cores used by the alogrithm (default is 1).
-##' @param discrim numeric. It indicates if each variable is discrimiative (1) or irrelevant (0) (only used if vbleSelec=0; default is rep(1,ncol(x))).
-##' @param nbSmall numeric. It indicates  the number of SmallEM algorithms performed for the ML inference (default is 250).
-##' @param iterSmall numeric. It indicates  the number of iterations for each SmallEM algorithm (default is 20).
-##' @param nbKeep numeric. It indicates the number of chains used for the final EM algorithm (default is 50).
-##' @param iterKeep numeric. It indicates the maximal number of iterations for each EM algorithm (default is 1000).
-##' @param tolKeep numeric. It indicates the maximal gap between two successive iterations of EM algorithm which stops the algorithm (default is 0.001).
+##' Statlog (Heart) Data Set
 ##' 
+##'  This dataset is a heart disease database similar to a database already present in the repository (Heart Disease databases) but in a slightly different form.
 ##'  
-##' @return Returns an instance of \linkS4class{VSLCMresultsMixed}.
+##'  
+##' 
+##'
+##' 
+##' @references Website:http://archive.ics.uci.edu/ml/datasets/statlog+(heart)
+##' @name heart
+##' @docType data
+##' @keywords datasets
+##' 
 ##' @examples
-##' \dontrun{
-##' data(iris)
-##' res.LCM <- VarSelCluster(x, 2)
-##' summary(res.LCM)
-##' }
-##' @export
-##'
-##'
-VarSelCluster <- function(x, g, vbleSelec=TRUE, crit.varsel="BIC", initModel=50,  nbcores=1, discrim=rep(1,ncol(x)), nbSmall=250, iterSmall=20,  nbKeep=50, iterKeep=1000, tolKeep=10**(-6)){
+##'   data(heart)
+NULL
+
+VarSelCluster.singleg <- function(x, g, vbleSelec, crit.varsel, initModel,  nbcores, discrim, nbSmall, iterSmall,  nbKeep, iterKeep, tolKeep){
   reference <- BuildS4Reference(x, g, initModel, vbleSelec, crit.varsel, TRUE, nbcores, discrim, nbSmall, iterSmall, nbKeep, iterKeep, tolKeep)
   if (g==1){
     reference <- withoutmixture(reference)
@@ -114,7 +129,101 @@ VarSelCluster <- function(x, g, vbleSelec=TRUE, crit.varsel="BIC", initModel=50,
       reference@strategy@vbleSelec <- vbleSelec
     }    
   }
-  return(DesignOutput(reference))
+  out <- DesignOutput(reference)
+  out <- new("VSLCMresults", data=convertdata(out@data), criteria=out@criteria, partitions=out@partitions,
+             model=out@model, strategy=out@strategy, param=convertparam(out@param))
+  out@criteria@discrim <- sort(pvdiscrim(out), decreasing = TRUE)
+  return(out)
+}
+
+###################################################################################
+##' Variable selection and clustering.
+##'
+##' @description  
+##' This function performs the model selection and the maximum likelihood estimation.
+##' It can be used for clustering only (i.e., all the variables are assumed to be discriminative). In this case, you must specify the data to cluster (arg. x), the number of clusters (arg. g) and the option vbleSelec must be FALSE.
+##' This function can also be used for variable selection in clustering. In this case, you must specify the data to analyse (arg. x), the number of clusters (arg. g) and the option vbleSelec must be TRUE. Variable selection can be done with BIC, MICL or AIC.
+##'
+##' @param x data.frame. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"
+##' @param gvals numeric. It defines number of components to consider.
+##' @param vbleSelec logical. It indicates if a variable selection is done
+##' @param crit.varsel character. It defines the information criterion used for the variable selection ("AIC", "BIC" or "MICL"; only used if vbleSelec=1)
+##' @param initModel numeric. It gives the number of initializations of the alternated algorithm maximizing the MICL criterion (only used if crit.varsel="MICL")
+##' @param nbcores numeric.  It defines the numerber of cores used by the alogrithm
+##' @param discrim numeric. It indicates if each variable is discrimiative (1) or irrelevant (0) (only used if vbleSelec=0)
+##' @param nbSmall numeric. It indicates  the number of SmallEM algorithms performed for the ML inference
+##' @param iterSmall numeric. It indicates  the number of iterations for each SmallEM algorithm
+##' @param nbKeep numeric. It indicates the number of chains used for the final EM algorithm
+##' @param iterKeep numeric. It indicates the maximal number of iterations for each EM algorithm
+##' @param tolKeep numeric. It indicates the maximal gap between two successive iterations of EM algorithm which stops the algorithm
+##' 
+##' @return Returns an instance of \linkS4class{VSLCMresults}.
+##' 
+##' @references Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
+##' 
+##' Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Arxiv 1703.02293.
+##' 
+##' @examples
+##' \dontrun{
+##' # Package loading
+##' require(VarSelLCM)
+##' 
+##' # Data loading:
+##' # x contains the observed variables
+##' # z the known statu (i.e. 1: absence and 2: presence of heart disease)
+##' data(heart)
+##' z <- heart[,"Class"]
+##' x <- heart[,-13]
+##' 
+##' # Cluster analysis without variable selection
+##' res_without <- VarSelCluster(x, 2, vbleSelec = FALSE)
+##' 
+##' # Cluster analysis with variable selection (with parallelisation)
+##' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
+##' 
+##' # Confusion matrices and ARI: variable selection decreases the misclassification error rate
+##' print(table(z, res_without@partitions@zMAP))
+##' print(table(z, res_with@partitions@zMAP))
+##' ARI(z, res_without@partitions@zMAP)
+##' ARI(z, res_with@partitions@zMAP)
+##' 
+##' # Summary of the best model
+##' summary(res_with)
+##' 
+##' # Opening Shiny application to easily see the results
+##' VarSelShiny(res_with)
+##' 
+##' # Parameters of the best model
+##' print(res_with)
+##' 
+##' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+##' plot(out, type="bar")
+##' # Boxplot for continuous (or interger) variable
+##' plot(out, y="MaxHeartRate", type="boxplot")
+##'
+##' # Empirical and theoretical distributions (to check that clustering is pertinent)
+##' plot(out, y="MaxHeartRate", type="cdf")
+##'
+##'# Summary of categorical variable
+##' plot(out, y="Sex")
+##' 
+##' # Summary of the probabilities of missclassification
+##' plot(out, type="probs-class")
+##' 
+##' # Imputation by posterior mean for the first observation
+##' not.imputed <- heart[1,-13]
+##' imputed <- VarSelImputation(out)[1,]
+##' rbind(not.imputed, imputed)
+##' 
+##' }
+##' @export
+##'
+##'
+VarSelCluster <- function(x, gvals, vbleSelec=TRUE, crit.varsel="BIC", initModel=50,  nbcores=1, discrim=rep(1,ncol(x)), nbSmall=250, iterSmall=20,  nbKeep=50, iterKeep=1000, tolKeep=10**(-6)){
+  out <- list()
+  for (g in 1:length(gvals))
+    out[[g]] <- VarSelCluster.singleg(x, gvals[g], vbleSelec, crit.varsel, initModel,  nbcores, discrim, nbSmall, iterSmall,  nbKeep, iterKeep, tolKeep)
+  out[[which.max(sapply(out, function(u) u@criteria@BIC))]]
 }
 
 ParallelCriterion <- function(reference, nb.cpus){
@@ -198,19 +307,19 @@ BuildS4Reference <- function(x, g, initModel, vbleSelec, crit.varsel, paramEstim
     reference <- new("VSLCMresultsInteger", data=data, criteria=InitCriteria(), model=new("VSLCMmodel",g=g, omega=discrim), strategy=strategy)
   else if (class(data) == "VSLCMdataCategorical")
     reference <- new("VSLCMresultsCategorical", data=data, criteria=InitCriteria(), model=new("VSLCMmodel",g=g, omega=discrim), strategy=strategy)
-  else if (class(data) == "VSLCMdataMixed")
-    reference <- new("VSLCMresultsMixed", data=data, criteria=InitCriteria(), model=new("VSLCMmodel",g=g, omega=discrim), strategy=strategy)
+  else if (class(data) == "VSLCMdata")
+    reference <- new("VSLCMresults", data=data, criteria=InitCriteria(), model=new("VSLCMmodel",g=g, omega=discrim), strategy=strategy)
   else
     stop("Problem in the data!")      
   return(reference)
 }
 
-ParallelMICL <- function(reference, nb.cpus){
-  if (reference@strategy@crit.varsel == TRUE){
-      }
-  
-  return(reference)
-}
+# ParallelMICL <- function(reference, nb.cpus){
+#   if (reference@strategy@crit.varsel == TRUE){
+#       }
+#   
+#   return(reference)
+# }
 ########################################################################################################################
 ## Fonctions principales du package, les seules accessibles par l'utilisateur sont VarSelCluster,
 ## Imputation (voir Imputation.R) et MICL
@@ -250,7 +359,7 @@ setMethod( f = "MICL",
 )
 ## Pour les variables mixed
 setMethod( f = "MICL", 
-           signature(x="data.frame", obj="VSLCMresultsMixed"), 
+           signature(x="data.frame", obj="VSLCMresults"), 
            definition = function(x, obj){
              obj@strategy@crit.varsel <- TRUE
              obj@data  <- VSLCMdata(x)
@@ -305,7 +414,7 @@ setMethod( f = "VarSelModelMLE",
 )
 ## Pour les variables mixed
 setMethod( f = "VarSelModelMLE", 
-           signature(obj="VSLCMresultsMixed",it="numeric"), 
+           signature(obj="VSLCMresults",it="numeric"), 
            definition = function(obj, it){
              if ((obj@strategy@vbleSelec==FALSE)||(obj@strategy@crit.varsel=="MICL")){
                reference <- OptimizeMICL(obj, "Mixed")

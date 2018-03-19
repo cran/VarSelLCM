@@ -3,26 +3,14 @@
 \docType{methods}
 \name{summary}
 \alias{summary}
-\alias{summary,VSLCMresultsContinuous-method}
-\alias{summary,VSLCMresultsInteger-method}
-\alias{summary}
-\alias{summary,VSLCMresultsCategorical-method}
-\alias{summary}
-\alias{summary,VSLCMresultsMixed-method}
-\alias{summary}
+\alias{summary,VSLCMresults-method}
 \title{Summary function.}
 \usage{
-\S4method{summary}{VSLCMresultsContinuous}(object)
-
-\S4method{summary}{VSLCMresultsInteger}(object)
-
-\S4method{summary}{VSLCMresultsCategorical}(object)
-
-\S4method{summary}{VSLCMresultsMixed}(object)
+\S4method{summary}{VSLCMresults}(object)
 }
 \arguments{
-\item{object}{instance of  \code{\linkS4class{VSLCMresultsContinuous}}, \code{\linkS4class{VSLCMresultsInteger}}, \code{\linkS4class{VSLCMresultsCategorical}} or \code{\linkS4class{VSLCMresultsMixed}}..}
+\item{object}{instance of \code{\linkS4class{VSLCMresults}}.}
 }
 \description{
-This function gives the summary of an instance of \code{\linkS4class{VSLCMresultsContinuous}}, \code{\linkS4class{VSLCMresultsInteger}}, \code{\linkS4class{VSLCMresultsCategorical}} or \code{\linkS4class{VSLCMresultsMixed}}.
+This function gives the summary of an instance of  \code{\linkS4class{VSLCMresults}}.
 }

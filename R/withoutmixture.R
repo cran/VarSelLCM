@@ -105,7 +105,7 @@ setMethod( f = "withoutmixture",
 
 ## Pour les variables mixed
 setMethod( f = "withoutmixture", 
-           signature(obj="VSLCMresultsMixed"), 
+           signature(obj="VSLCMresults"), 
            definition = function(obj){
              obj@model@omega <-  as.numeric(obj@model@omega)
              namestmp <- numeric()
