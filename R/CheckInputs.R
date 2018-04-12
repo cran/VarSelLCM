@@ -3,14 +3,20 @@ CheckInputs <- function(x, g, initModel, vbleSelec, crit.varsel, discrim, paramE
   if ( (is.numeric(g)==FALSE) || (length(g)!=1))
     stop("The component number have to be an integer of length one!")
   
+  if (is.matrix(x))
+    x <- as.data.frame(x)
+  
   if (is.data.frame(x)==FALSE)
     stop("Data set must be a data frame!")
   
   if (is.logical(vbleSelec) == FALSE)
     stop("Input vbleSelec must be logicial")
   
-  if ((crit.varsel %in% c("AIC", "BIC", "MICL"))==FALSE)
-    stop("Input vbleSelec must be equal to AIC, BIC or MICL")
+  if (!(crit.varsel %in% c("AIC", "BIC", "ICL")) & (!vbleSelec))
+    stop("Input vbleSelec must be equal to AIC, BIC or ICL without variable selection")
+  
+  if (!(crit.varsel %in% c("AIC", "BIC", "MICL")) & (vbleSelec))
+    stop("Input vbleSelec must be equal to AIC, BIC or MICL with variable selection")
   
   if ((length(discrim) != ncol(x)) || (all(discrim %in% c(0,1))==FALSE))
     stop("Input discrim must be logical of length number of variables")
@@ -35,6 +41,4 @@ CheckInputs <- function(x, g, initModel, vbleSelec, crit.varsel, discrim, paramE
   
   if ((is.numeric(tolKeep) == FALSE) || (length(tolKeep)!=1))
     stop("Input tolKeep must be numeric of size one")  
-  
-
 }

@@ -12,8 +12,8 @@ Model-based clustering with variable selection and estimation of the number of c
 \tabular{ll}{
   Package: \tab VarSelLCM\cr 
   Type: \tab Package\cr 
-  Version: \tab 2.1.0\cr
-  Date: \tab 2018-03-14\cr 
+  Version: \tab 2.1.1\cr
+  Date: \tab 2018-04-06\cr 
   License: \tab GPL-3\cr  
   LazyLoad: \tab yes\cr
   URL:  \tab http://varsellcm.r-forge.r-project.org/\cr
@@ -85,7 +85,7 @@ rbind(not.imputed, imputed)
 \references{
 Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
 
-Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Arxiv 1703.02293.
+Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Journal of classification, to appear.
 }
 \author{
 Matthieu Marbac and Mohammed Sedki Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>

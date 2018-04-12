@@ -23,11 +23,11 @@ bibentry(bibtype = "Article",
          author = personList(person(given="Matthieu", family="Marbac"),
                              person(given="Etienne", family="Patin"),  
                              person(given="Mohammed", family="Sedki")),
-         journal = "Arxiv",
+         journal = "Journal of Classification",
          year = "2018",
-         volume = "",
+         volume = "to appear",
          number = "",
          pages = "",
          #
          textVersion =
-           paste("Marbac, M. and Patin, E. and Sedki, M. (2018).","Variable selection for mixed data clustering: Application in human population genomics.", "Arxiv 1703.02293."))
+           paste("Marbac, M. and Patin, E. and Sedki, M. (2018).","Variable selection for mixed data clustering: Application in human population genomics.", "Journal of Classification, to appear"))

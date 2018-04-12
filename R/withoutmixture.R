@@ -27,6 +27,7 @@ setMethod( f = "withoutmixture",
              obj@partitions@zOPT <- rep(1, obj@data@n)
              obj@partitions@tik <- matrix(1, obj@data@n, 1)
              obj@criteria@loglikelihood <- sum(proba)
+             obj@criteria@AIC <- obj@criteria@loglikelihood - obj@data@d*2
              obj@criteria@BIC <- obj@criteria@loglikelihood - obj@data@d*log(obj@data@n)
              obj@criteria@ICL <- ICLcontinuous(obj) 
              obj@criteria@MICL <- obj@criteria@ICL
@@ -57,6 +58,7 @@ setMethod( f = "withoutmixture",
              obj@partitions@zOPT <- rep(1, obj@data@n)
              obj@partitions@tik <- matrix(1, obj@data@n, 1)
              obj@criteria@loglikelihood <- sum(proba)
+             obj@criteria@AIC <- obj@criteria@loglikelihood - obj@data@d
              obj@criteria@BIC <- obj@criteria@loglikelihood - 0.5*obj@data@d*log(obj@data@n)
              obj@criteria@ICL <- ICLinteger(obj) 
              obj@criteria@MICL <- obj@criteria@ICL
@@ -89,6 +91,7 @@ setMethod( f = "withoutmixture",
              obj@partitions@zOPT <- rep(1, obj@data@n)
              obj@partitions@tik <- matrix(1, obj@data@n, 1)
              obj@criteria@loglikelihood <- sum(proba)
+             obj@criteria@AIC <- obj@criteria@loglikelihood - nbparam
              obj@criteria@BIC <- obj@criteria@loglikelihood - 0.5*nbparam*log(obj@data@n)
              obj@criteria@ICL <- ICLcategorical(obj) 
              obj@criteria@MICL <- obj@criteria@ICL
@@ -171,6 +174,7 @@ setMethod( f = "withoutmixture",
              obj@criteria@MICL <- obj@criteria@ICL
              obj@criteria@degeneracyrate <- 0                         
              obj@criteria@BIC <- obj@criteria@loglikelihood - nbparam*0.5*log(obj@data@n)
+             obj@criteria@AIC <- obj@criteria@loglikelihood - nbparam
              
              return(obj)           
            }

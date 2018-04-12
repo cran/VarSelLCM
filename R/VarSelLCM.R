@@ -6,8 +6,8 @@
 ##' \tabular{ll}{
 ##'   Package: \tab VarSelLCM\cr 
 ##'   Type: \tab Package\cr 
-##'   Version: \tab 2.1.0\cr
-##'   Date: \tab 2018-03-14\cr 
+##'   Version: \tab 2.1.1\cr
+##'   Date: \tab 2018-04-06\cr 
 ##'   License: \tab GPL-3\cr  
 ##'   LazyLoad: \tab yes\cr
 ##'   URL:  \tab http://varsellcm.r-forge.r-project.org/\cr
@@ -41,7 +41,7 @@
 ##'
 ##' @references Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
 ##' 
-##' Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Arxiv 1703.02293.
+##' Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Journal of classification, to appear.
 ##' 
 ##' @examples
 ##' \dontrun{
@@ -144,10 +144,10 @@ VarSelCluster.singleg <- function(x, g, vbleSelec, crit.varsel, initModel,  nbco
 ##' It can be used for clustering only (i.e., all the variables are assumed to be discriminative). In this case, you must specify the data to cluster (arg. x), the number of clusters (arg. g) and the option vbleSelec must be FALSE.
 ##' This function can also be used for variable selection in clustering. In this case, you must specify the data to analyse (arg. x), the number of clusters (arg. g) and the option vbleSelec must be TRUE. Variable selection can be done with BIC, MICL or AIC.
 ##'
-##' @param x data.frame. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"
+##' @param x data.frame/matrix. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"
 ##' @param gvals numeric. It defines number of components to consider.
 ##' @param vbleSelec logical. It indicates if a variable selection is done
-##' @param crit.varsel character. It defines the information criterion used for the variable selection ("AIC", "BIC" or "MICL"; only used if vbleSelec=1)
+##' @param crit.varsel character. It defines the information criterion used for the variable selection. Without variable selection, you can use one of the three criteria: "AIC", "BIC" and "ICL". With variable selection, you can use "AIC", BIC" and "MICL".
 ##' @param initModel numeric. It gives the number of initializations of the alternated algorithm maximizing the MICL criterion (only used if crit.varsel="MICL")
 ##' @param nbcores numeric.  It defines the numerber of cores used by the alogrithm
 ##' @param discrim numeric. It indicates if each variable is discrimiative (1) or irrelevant (0) (only used if vbleSelec=0)
@@ -161,7 +161,7 @@ VarSelCluster.singleg <- function(x, g, vbleSelec, crit.varsel, initModel,  nbco
 ##' 
 ##' @references Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
 ##' 
-##' Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Arxiv 1703.02293.
+##' Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Journal of Classification, to appear.
 ##' 
 ##' @examples
 ##' \dontrun{
@@ -223,7 +223,11 @@ VarSelCluster <- function(x, gvals, vbleSelec=TRUE, crit.varsel="BIC", initModel
   out <- list()
   for (g in 1:length(gvals))
     out[[g]] <- VarSelCluster.singleg(x, gvals[g], vbleSelec, crit.varsel, initModel,  nbcores, discrim, nbSmall, iterSmall,  nbKeep, iterKeep, tolKeep)
-  out[[which.max(sapply(out, function(u) u@criteria@BIC))]]
+  if (crit.varsel=="BIC")  out <- out[[which.max(sapply(out, function(u) u@criteria@BIC))]]
+  if (crit.varsel=="AIC") out <-   out[[which.max(sapply(out, function(u) u@criteria@AIC))]]
+  if (crit.varsel=="ICL") out <-  out[[which.max(sapply(out, function(u) u@criteria@ICL))]]
+  if (crit.varsel=="MICL") out <-  out[[which.max(sapply(out, function(u) u@criteria@MICL))]]
+  out
 }
 
 ParallelCriterion <- function(reference, nb.cpus){

@@ -1,3 +1,9 @@
+Version 2.1.1 (2018-03)
+    o ICL can be used if there is no variable selection
+    o Input data can be stored in a matrix (then, Gaussian mixture is considered)
+    o Bug fixed: AIC is now computed if only one component is considered
+    o Reference to Journal of Classification for Marbac, M. and Patin, E. and Sedki, M. (2018)
+
 Version 2.1 (2018-03)
     o Interface Shiny is available to analyze the clustering results (use function VarSelShiny on the clustering output).
     o Modification of the class returned by the clustering function (results obtained by old version of VarSelLCM need to be convert by using the function VarSelConvert).

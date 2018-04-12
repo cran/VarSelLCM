@@ -9,13 +9,13 @@ VarSelCluster(x, gvals, vbleSelec = TRUE, crit.varsel = "BIC",
   iterSmall = 20, nbKeep = 50, iterKeep = 1000, tolKeep = 10^(-6))
 }
 \arguments{
-\item{x}{data.frame. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"}
+\item{x}{data.frame/matrix. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"}
 
 \item{gvals}{numeric. It defines number of components to consider.}
 
 \item{vbleSelec}{logical. It indicates if a variable selection is done}
 
-\item{crit.varsel}{character. It defines the information criterion used for the variable selection ("AIC", "BIC" or "MICL"; only used if vbleSelec=1)}
+\item{crit.varsel}{character. It defines the information criterion used for the variable selection. Without variable selection, you can use one of the three criteria: "AIC", "BIC" and "ICL". With variable selection, you can use "AIC", BIC" and "MICL".}
 
 \item{initModel}{numeric. It gives the number of initializations of the alternated algorithm maximizing the MICL criterion (only used if crit.varsel="MICL")}
 
@@ -98,5 +98,5 @@ rbind(not.imputed, imputed)
 \references{
 Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
 
-Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Arxiv 1703.02293.
+Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Journal of Classification, to appear.
 }
