@@ -21,6 +21,7 @@
 ##'
 ##'
 VarSelShiny <-  function(X){
+  check.results(X)
   G <- .GlobalEnv
   assign("resVSLC", X, envir=G)
   a=shiny::runApp(system.file("shinyApp",package="VarSelLCM"),launch.browser = TRUE)

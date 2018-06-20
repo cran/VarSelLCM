@@ -7,8 +7,8 @@ ImputCont <- function(data, tik, param, method){
       if (method=="postmean"){
         for (k in 1:ncol(tik)) output[who, j] <- output[who, j] + tik[who,k]*param@mu[j,k]
       }else if (method=="sampling"){
-       z <- sample(1:ncol(tik), 1, prob=tik[who,])
-       output[who, j] <- rnorm(1, param@mu[j,z], param@sd[j,z])
+        z <- sample(1:ncol(tik), 1, prob=tik[who,])
+        output[who, j] <- rnorm(1, param@mu[j,z], param@sd[j,z])
       }else{
         stop("argument method must be equal to postmean or sampling")
       }
@@ -60,55 +60,80 @@ ImputCate <- function(data, tik, param, method){
 ##' Imputation of missing values
 ##'
 ##' @description  
-##' Imputation function based on the mixture model. Two methods can be used: missing values can be 
-##' imputed by their posterior mean (args "postmean") or by a sampling from their full conditionnal
-##' distribution (args "sampling").
+##' This function permits imputation of missing values in a dataset by using mixture model.
+##' Two methods can be used for imputation:
+##' \itemize{
+#'  \item{posterior mean (method="postmean")}
+#'  \item{sampling from the full conditionnal distribution (method="sampling")}
+#'  }
 ##' 
-##' @param obj an instance of \linkS4class{VSLCMresults} returned by function \link{VarSelCluster}.
+##' @param obj an instance of \linkS4class{VSLCMresults}  which defines the model used for imputation.
+##' @param newdata data.frame Dataset containing the missing values to impute.
 ##' @param method character definiting the method of imputation: "postmean" or "sampling"
 ##' 
 ##' @examples
-##' \dontrun{
 ##' # Data loading
 ##' data("heart")
+##' 
 ##' # Clustering en 2 classes
-##' heart[1,1] <- NA
 ##' results <- VarSelCluster(heart[,-13], 2)
-##' # Opening Shiny application to easily see the results
-##' VarSelImputation(results)[1,1]
-##' }
+##' 
+##' # Data where missing values will be imputed
+##' newdata <- heart[1:2,-13]
+##' newdata[1,1] <- NA
+##' newdata[2,2] <- NA
+##' 
+##' # Imputation
+##' VarSelImputation(results, newdata)
 ##' 
 ##' @export
 ##'
 ##'
-VarSelImputation <- function(obj, method="postmean"){
-  output <- NULL
-  if (class(obj)=="VSLCMresults"){
-    output <- matrix(NA, obj@data@n, obj@data@d)
-    colnames(output) <- names(obj@model@omega)
-    output <- as.data.frame(output)
-    col <- 1
-    if (obj@data@withContinuous){
-      output[,c(col:(col+obj@data@dataContinuous@d-1))] <- ImputCont(obj@data@dataContinuous, obj@partitions@tik, obj@param@paramContinuous, method)
-      col <- col + obj@data@dataContinuous@d
-    }
-    if (obj@data@withInteger){
-      output[,c(col: (col+obj@data@dataInteger@d-1))] <- ImputInte(obj@data@dataInteger, obj@partitions@tik, obj@param@paramInteger, method)
-      col <- col + obj@data@dataInteger@d
-    }
-    if (obj@data@withCategorical){
-      output[,c(col: (col+obj@data@dataCategorical@d-1))] <- ImputCate(obj@data@dataCategorical, obj@partitions@tik, obj@param@paramCategorical, method)
-      col <- col + obj@data@dataCategorical@d
-    }
-  } else
-    stop("obj doesn't arise from function VarSelCluster")
+VarSelImputation <- function(obj, newdata, method="postmean"){
+  #### Tests on the input arguments
+  check.results(obj)        
+  if (!(method %in% c("postmean", "sampling")))
+    stop("method must be postmean or sampling")
+  ####
+  tik <- predict(obj, newdata)
   
-  or <- 1:obj@data@d
-  for (j in 1:obj@data@d){
-    or[j] <- which(colnames(output)==obj@data@var.names[j])
+  if (method=="postmean"){
+    for (nom in colnames(newdata)){
+      loc <- which(colnames(newdata)==nom)
+      if (any(is.na(newdata[,loc]))){
+        where <- which(is.na(newdata[,loc]))
+        if (nom %in% rownames(obj@param@paramContinuous@mu)){
+          who <- which(nom == rownames(obj@param@paramContinuous@mu))
+          newdata[where, loc] <- as.numeric(tik[where, , drop=FALSE] %*% as.numeric(obj@param@paramContinuous@mu[who, , drop=FALSE]))
+        }else if (nom %in% rownames(obj@param@paramInteger@lambda)){
+          who <- which(nom == rownames(obj@param@paramInteger@lambda))
+          newdata[where, loc] <- as.numeric(tik[where, , drop=FALSE] %*% as.numeric(obj@param@paramInteger@lambda[who, , drop=FALSE]))
+        }else if (nom %in% names(obj@param@paramCategorical@alpha)){
+          who <- which(nom ==  names(obj@param@paramCategorical@alpha))
+          newdata[where, loc] <- obj@data@dataCategorical@modalitynames[[who]][apply(tik[where,]%*%obj@param@paramCategorical@alpha[[who]],1,which.max)]
+        }
+      }
+    }
+  }else{
+    for (i in which(rowSums(is.na(newdata))>0)){
+      zi <- sample(1:ncol(tik), 1, prob = tik[i,])
+      for (nom in colnames(newdata)){
+        loc <- which(colnames(newdata)==nom)
+        if (is.na(newdata[i,loc])){
+          if (nom %in% rownames(obj@param@paramContinuous@mu)){
+            who <- which(nom == rownames(obj@param@paramContinuous@mu))
+            newdata[i, loc] <- rnorm(1, obj@param@paramContinuous@mu[who, zi], obj@param@paramContinuous@sd[who, zi])
+          }else if (nom %in% rownames(obj@param@paramInteger@lambda)){
+            who <- which(nom == rownames(obj@param@paramInteger@lambda))
+            newdata[i, loc] <- rpois(1, obj@param@paramInteger@lambda[who,zi])
+          }else if (nom %in% names(obj@param@paramCategorical@alpha)){
+            who <- which(nom ==  names(obj@param@paramCategorical@alpha))
+            newdata[i, loc] <- sample(obj@data@dataCategorical@modalitynames[[who]], 1, prob = obj@param@paramCategorical@alpha[[who]][zi,])
+          }
+        }
+      }
+    }
   }
-  output <- output[,or]
-  
-  return(output)         
+  return(newdata)         
 }
 

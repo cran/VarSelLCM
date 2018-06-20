@@ -1,3 +1,8 @@
+Version 2.1.2 (2018-03)
+    o Plot function has default arguments
+    o Extraction functions predict(), coef(), fitted(), AIC(), BIC() and MICL() are added.
+    o print() and summary() methods have been modified.
+
 Version 2.1.1 (2018-03)
     o ICL can be used if there is no variable selection
     o Input data can be stored in a matrix (then, Gaussian mixture is considered)

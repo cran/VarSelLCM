@@ -4,7 +4,7 @@
 \name{print}
 \alias{print}
 \alias{print,VSLCMresults-method}
-\title{Summary function.}
+\title{Print function.}
 \usage{
 \S4method{print}{VSLCMresults}(x)
 }

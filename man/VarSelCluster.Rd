@@ -50,50 +50,76 @@ require(VarSelLCM)
 # x contains the observed variables
 # z the known statu (i.e. 1: absence and 2: presence of heart disease)
 data(heart)
-z <- heart[,"Class"]
+ztrue <- heart[,"Class"]
 x <- heart[,-13]
 
 # Cluster analysis without variable selection
-res_without <- VarSelCluster(x, 2, vbleSelec = FALSE)
+res_without <- VarSelCluster(x, 2, vbleSelec = FALSE, crit.varsel = "BIC")
 
 # Cluster analysis with variable selection (with parallelisation)
-res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
+res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40, crit.varsel = "BIC")
 
-# Confusion matrices and ARI: variable selection decreases the misclassification error rate
-print(table(z, res_without@partitions@zMAP))
-print(table(z, res_with@partitions@zMAP))
-ARI(z, res_without@partitions@zMAP)
-ARI(z, res_with@partitions@zMAP)
+# Comparison of the BIC for both models:
+# variable selection permits to improve the BIC
+BIC(res_without)
+BIC(res_with)
+
+# Confusion matrices and ARI (only possible because the "true" partition is known).
+# ARI is computed between the true partition (ztrue) and its estimators
+# ARI is an index between 0 (partitions are independent) and 1 (partitions are equals)
+# variable selection permits to improve the ARI
+# Note that ARI cannot be used for model selection in clustering, because there is no true partition
+# variable selection decreases the misclassification error rate
+table(ztrue, fitted(res_without))
+table(ztrue, fitted(res_with))
+ARI(ztrue,  fitted(res_without))
+ARI(ztrue, fitted(res_with))
+ 
+# Estimated partition
+fitted(res_with)
+
+# Estimated probabilities of classification
+head(fitted(res_with, type="probability"))
+
+# Summary of the probabilities of missclassification
+plot(res_with, type="probs-class")
 
 # Summary of the best model
 summary(res_with)
 
+# Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+plot(res_with)
+
+# More detailed output
+print(res_with)
+
+# Print model parameter
+coef(res_with)
+
+# Boxplot for the continuous variable MaxHeartRate
+plot(x=res_with, y="MaxHeartRate")
+
+# Empirical and theoretical distributions of the most discriminative variable 
+# (to check that the distribution is well-fitted)
+plot(res_with, y="MaxHeartRate", type="cdf")
+
+# Summary of categorical variable
+plot(res_with, y="Sex")
+
+# Probabilities of classification for new observations 
+predict(res_with, newdata = x[1:3,])
+
+# Imputation by posterior mean for the first observation
+not.imputed <- x[1,]
+imputed <- VarSelImputation(res_with, x[1,], method = "sampling")
+rbind(not.imputed, imputed)
+
 # Opening Shiny application to easily see the results
 VarSelShiny(res_with)
 
-# Parameters of the best model
-print(res_with)
-
-# Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
-plot(out, type="bar")
-# Boxplot for continuous (or interger) variable
-plot(out, y="MaxHeartRate", type="boxplot")
-
-# Empirical and theoretical distributions (to check that clustering is pertinent)
-plot(out, y="MaxHeartRate", type="cdf")
-
-# Summary of categorical variable
-plot(out, y="Sex")
-
-# Summary of the probabilities of missclassification
-plot(out, type="probs-class")
-
-# Imputation by posterior mean for the first observation
-not.imputed <- heart[1,-13]
-imputed <- VarSelImputation(out)[1,]
-rbind(not.imputed, imputed)
 
 }
+
 }
 \references{
 Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.

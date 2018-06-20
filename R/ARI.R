@@ -18,10 +18,13 @@
 ##' @export
 ##'
 ##'
-ARI <- function (x, y) 
-{
+ARI <- function (x, y){
+  #### Tests on the input arguments
   if ((length(x) != length(y)))
     stop("The two partitions must be vectors of same length")
+  
+  ####
+  
   ari <- 0
   if ((length(unique(x)) + length(unique(y))) == 2) ari <- 1
   conting <- table(x, y)

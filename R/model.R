@@ -139,3 +139,6 @@ setClass(
   prototype = prototype(g=numeric(), omega=numeric(), names.relevant=character(), names.irrelevant=character())
 )
 
+check.results <- function(obj){
+  if (class(obj)!="VSLCMresults") stop("Results must be an instance of VSLCMresults returned by the function VarSelCluster of R package VarSelLCM")
+}

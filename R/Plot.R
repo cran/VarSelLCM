@@ -66,27 +66,65 @@ varsellcm.plot.cate  <- function(tmp, y){
   print(graph)
 }
 
-
-#' This function draws information about an instance of \code{\linkS4class{VSLCMresults}}.
+#' Plots of an instance of \code{\linkS4class{VSLCMresults}}
+#' 
+#' @description 
+#' This function proposes different plots of an instance of \code{\linkS4class{VSLCMresults}}.
+#' It permits to visualize:
+#' \itemize{
+#'  \item{the discriminative power of the variables (type="bar" or type="pie"). The larger is the discriminative power of a variable, the more explained are the clusters by this variable.}
+#'  \item{the probabilities of misclassification (type="probs-overall" or type="probs-class").}
+#'  \item{the distribution of a signle variable (y is the name of the variable and type="boxplot" or type="cdf").}
+#'  }
 #' 
 #' @param x instance of  \code{\linkS4class{VSLCMresults}}.
-#' @param y character. The name of the variable we are interested in. Otherwise, graphic about general results is ploted. 
-#' @param type character. Can be cdf or boxplot to plot the distribution of the variable we are interested in. Otherwise, must be pie or bar to obtain information about the discriminative power of the variables and must be probs-overall or probs-class to obtain information about the misclassification probabilities. 
+#' @param y character. The name of the variable to ploted (only used if type="boxplot" or type="cdf"). 
+#' @param type character. The type of plot ("bar": barplot of the disciminative power, "pie": pie of the discriminative power, "probs-overall": histogram of the probabilities of misclassification, "probs-class": histogram of the probabilities of misclassification per cluster, "boxplot": boxplot of a single variable per cluster, "cdf": distribution of a single variable per cluster).
 #' @param ylim numeric. Define the range of the most discriminative variables to considered (only use if type="pie" or type="bar")
-#' @param ... Additional argument list that might not ever be used.
 #' 
 #' @name plot
 #' @rdname plot-methods
 #' @docType methods
 #' @exportMethod plot
-NULL
-#' @rdname plot-methods
-#' @aliases plot plot,VSLCMresults,ANY-method
-#' @aliases plot plot,VSLCMresults,character,ANY-method
+#' @aliases plot plot,VSLCMresults-method plot,VSLCMresults,character-method plot,VSLCMresults,ANY-method 
+#' @aliases plot plot,VSLCMresults,character-method
+#' @aliases plot plot,VSLCMresults,ANY-method 
 #' 
-setMethod(f="plot",
+#'  
+#' @examples 
+#' \dontrun{
+#' require(VarSelLCM)
+#'
+#' # Data loading:
+#' # x contains the observed variables
+#' # z the known statu (i.e. 1: absence and 2: presence of heart disease)
+#' data(heart)
+#' ztrue <- heart[,"Class"]
+#' x <- heart[,-13]
+#' 
+#' # Cluster analysis with variable selection (with parallelisation)
+#' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
+#' 
+#' # Summary of the probabilities of missclassification
+#' plot(res_with, type="probs-class")
+#' 
+#' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+#' plot(res_with)
+#' 
+#' # Boxplot for the continuous variable MaxHeartRate
+#' plot(res_with, y="MaxHeartRate")
+#' 
+#' # Empirical and theoretical distributions (to check that the distribution is well-fitted)
+#' plot(res_with, y="MaxHeartRate", type="cdf")
+#' 
+#' # Summary of categorical variable
+#' plot(res_with, y="Sex")
+#' }
+setMethod(
+  f="plot",
   signature = c("VSLCMresults", "character"),
-  definition = function(x, y, type,ylim=NULL){
+  definition = function(x, y, type="boxplot", ylim=c(1, x@data@d)){
+    
     vu <- FALSE
     if (x@data@withContinuous){
       if (y %in% rownames(x@param@paramContinuous@mu)){
@@ -130,21 +168,21 @@ setMethod(f="plot",
         ifelse (length(loc2)==1,
                 varsellcm.plot.cate(x@param@paramCategorical@alpha[[loc2]], y),
                 stop("y must be the name of a variable in the analyzed data"))
-
+        
         vu <- TRUE
       }
     }
     if (!vu)
       stop("y must be the name of a variable in the analyzed data")
+    
   }
 )
-
 
 
 setMethod(
   f="plot",
   signature = c("VSLCMresults"),
-  definition = function(x, type, ylim=c(1, x@data@d)){
+  definition = function(x, type="bar", ylim=c(1, x@data@d)){
     df <- data.frame(discrim.power=x@criteria@discrim, variables=as.factor(names(x@criteria@discrim)), rg=1:x@data@d)
     df <- df[which(df$discrim.power>0),]
     df <- df[order(df$discrim.power, decreasing = T),]
@@ -170,7 +208,7 @@ setMethod(
         scale_fill_brewer(palette="Paired")+
         theme_minimal()  +
         ggtitle(paste("Discriminative power")) +
-        theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))
+        theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))+ labs(fill=' ') 
       print(bar)
     }else if (type=="probs-overall"){
       tmp <- data.frame(probs=1-apply(x@partitions@tik, 1, max))
@@ -179,8 +217,8 @@ setMethod(
         theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))
       print(tikplot)
     }else if (type=="probs-class"){
-      tmp <- data.frame(probs=1-apply(x@partitions@tik, 1, max), class=as.factor(x@partitions@zMAP))
-      tikplot <-    ggplot(tmp, aes(x=tmp$probs, fill=class)) +   geom_histogram(position="dodge", binwidth = 0.05)+ scale_x_continuous("Probability of misclassification") +
+      tmp <- data.frame(probs=1-apply(x@partitions@tik, 1, max), class=as.factor(paste("class",x@partitions@zMAP, sep="-")))
+      tikplot <-    ggplot(tmp, aes(x=tmp$probs)) +  facet_grid(class ~ .) + geom_histogram(position="dodge", binwidth = 0.05)+ scale_x_continuous("Probability of misclassification") +
         ggtitle(paste("Probabilities of misclassification")) +
         theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))
       print(tikplot)
@@ -188,4 +226,7 @@ setMethod(
       stop("type must be specified and equal to pie or bar or probs-overall or class")
     }
   }
+  
 )
+
+

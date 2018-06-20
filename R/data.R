@@ -1,25 +1,3 @@
-
-########################################################################################################################## S4 classes for the data################################################################################################################################################################################################################################################## S4 VSLCMdataContinuous: class for continuous data sets#######################################################################################################################Constructor of [\code{\linkS4class{VSLCMdataContinuous}}] class
-
-#' Constructor of \code{\linkS4class{VSLCMdataContinuous}} class
-#' 
-#' \describe{ 
-#'   \item{n}{number of observations}
-#'   \item{d}{number of variables}
-#'   \item{data}{matrix of observations (one row = one observation)}
-#'   \item{notNA}{matrix of logical (1:observed, 0:unobserved)}
-#'   \item{priors}{hyper-parameters of the prior distributions}
-#' }
-#' @examples
-#'   getSlots("VSLCMdataContinuous")
-#'   
-#' 
-#' @name VSLCMdataContinuous-class
-#' @rdname VSLCMdataContinuous-class
-#' @exportClass VSLCMdataContinuous
-
-
-
 setClass(
   Class = "VSLCMdataContinuous", 
   representation = representation(
@@ -37,21 +15,6 @@ setClass(
     priors=matrix()
   )
 )
-#' Constructor of \code{\linkS4class{VSLCMdataInteger}} class
-#' 
-#' \describe{
-#'   \item{n}{number of observations}
-#'   \item{d}{number of variables}
-#'   \item{data}{matrix of observations (one row = one observation)}
-#'   \item{notNA}{matrix of logical (1:observed, 0:unobserved)}
-#'   \item{priors}{hyper-parameters of the prior distributions}
-#' }
-#'  @examples
-#'   getSlots("VSLCMdataInteger")
-#' 
-#' @name VSLCMdataInteger-class
-#' @rdname VSLCMdataInteger-class
-#' @exportClass VSLCMdataInteger
 
 setClass(
   Class = "VSLCMdataInteger", 
@@ -70,23 +33,7 @@ setClass(
     priors=matrix()
   )
 )
-#' Constructor of \code{\linkS4class{VSLCMdataCategorical}} class
-#' 
-#' \describe{
-#'   \item{n}{number of observations}
-#'   \item{d}{number of variables}
-#'   \item{data}{matrix of observations (one row = one observation)}
-#'   \item{shortdata}{matrix of unique profils}
-#'   \item{weightdata}{weights of profils}
-#'   \item{modalitynames}{names of levels}
-#' }
-#' 
-#' @examples
-#'   getSlots("VSLCMdataCategorical")
-#' 
-#' @name VSLCMdataCategorical-class
-#' @rdname VSLCMdataCategorical-class
-#' @exportClass VSLCMdataCategorical
+
 setClass(
   Class = "VSLCMdataCategorical", 
   representation = representation(
@@ -133,6 +80,7 @@ setClass(
 #' @name VSLCMdata-class
 #' @rdname VSLCMdata-class
 #' @exportClass VSLCMdata
+#' 
 setClass(
   Class = "VSLCMdata", 
   representation = representation(
@@ -199,11 +147,16 @@ VSLCMdata <- function(x, redquali=TRUE){
   n <- nrow(x)
   d <- ncol(x)
   # recherche des indices de variables numeric et factor
+  for (j in 1:d){
+    if (any(class(x[,j])=="ordered"))
+      x[,j] <- factor(x[,j], ordered=F)
+  }
   type <- numeric()
   for (j in 1:d) type[j] <- class(x[,j])
+  
   idxcont <- which(type=="numeric")
   idxinte <- which(type=="integer")
-  idxcat <- which(type=="factor")
+  idxcat <- which(type == "factor")
   if ((all(type %in% c("numeric", "integer", "factor"))==FALSE))
     stop("At least one variable is neither numeric, integer nor factor!")
   
@@ -293,6 +246,10 @@ VSLCMdataMixte <- function(x, redquali=TRUE){
   n <- nrow(x)
   d <- ncol(x)
   # recherche des indices de variables numeric et factor
+  for (j in 1:d){
+    if (any(class(x[,j])=="ordered"))
+      x[,j] <- factor(x[,j], ordered=F)
+  }
   type <- numeric()
   for (j in 1:d) type[j] <- class(x[,j])
   idxcont <- which(type=="numeric")

@@ -2,7 +2,7 @@
 ## Surcharge de la fonction print 
 ########################################################################################################################
 #'
-#' Summary function.
+#' Print function.
 #' 
 #' This function gives the print of an instance of  \code{\linkS4class{VSLCMresults}}.
 #' 
@@ -18,120 +18,49 @@ setMethod(
   f="print",
   signature = c("VSLCMresults"),
   definition = function(x){
-    summary(x)    
-    if (x@criteria@degeneracyrate != 1){
-      cat("**************************************\n")
-      cat("\nParameters of the relevant variables:\n")
-      for (k in 1:x@model@g){
-        if (k>1){
-          cat("*******************\n")
-        }
-        cat("Class",k,"\n")
-        cat("Proportion:",x@param@pi[k],"\n")
-        if (x@data@withContinuous){
-          
-          tmp <- data.frame(mean=x@param@paramContinuous@mu[,k], sd=x@param@paramContinuous@sd[,k])
-          if (sum(x@model@omega[names(x@model@omega)%in%rownames(tmp)])>0){
-            cat("Parameters of continuous variables \n")
-            keep <- as.data.frame(tmp[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==1),])
-            rownames(keep) <- rownames(tmp)[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==1)]
-            colnames(keep) <- c("mean", "sd")
-            print(keep)
-          }
-            
-          cat("\n")
-        }
-        if (x@data@withInteger){
-          tmp <- data.frame(lambda=x@param@paramInteger@lambda[,k])
-          rownames(tmp)  <- rownames(x@param@paramInteger@lambda)
-          if (sum(x@model@omega[names(x@model@omega)%in%rownames(tmp)])>0){
-            cat("Parameters of count variables \n")
-            keep <- as.data.frame(tmp[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==1),])
-            rownames(keep) <- rownames(tmp)[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==1)]         
-            colnames(keep) <- "lambda"
-            print(keep)
-          }
-          cat("\n")
-        }
-        
-        if (x@data@withCategorical){
-          maxcol <- 0
-          for (j in 1:x@data@dataCategorical@d) maxcol <- max(maxcol, length(x@data@dataCategorical@modalitynames[[j]]))
-          alpha <- matrix(0,x@data@dataCategorical@d, maxcol)
-          for (j in 1:x@data@dataCategorical@d)  alpha[j,1:length(x@data@dataCategorical@modalitynames[[j]])] <- round(x@param@paramCategorical@alpha[[j]][k,],6)
-          for (j in 1:ncol(alpha)) alpha[,j] <- as.character(alpha[,j])
-          for (j in 1:x@data@dataCategorical@d){
-            if (length(x@data@dataCategorical@modalitynames[[j]])<maxcol)
-              alpha[j, (length(x@data@dataCategorical@modalitynames[[j]])+1):maxcol] <- rep(".", maxcol-length(x@data@dataCategorical@modalitynames[[j]]))
-            
-          }
-          alpha <- data.frame(alpha)
-          colnames(alpha) <- paste("Level",1:ncol(alpha),sep=".")
-          rownames(alpha) <- names(x@param@paramCategorical@alpha)
-          if (sum(x@model@omega[names(x@model@omega)%in%rownames(alpha)])>0){
-            cat("Parameters of categorical variables \n")      
-            keep <- alpha[which(x@model@omega[names(x@model@omega)%in%rownames(alpha)]==1),]
-            rownames(keep) <- rownames(alpha)[which(x@model@omega[names(x@model@omega)%in%rownames(alpha)]==1)]
-            print(keep) 
-          }
-          cat("\n")
-        }
-        
-        cat("\n")
-      }
-      if (any(x@model@omega==0)){
-        cat("**************************************\n")
-        cat("\nParameters of the irrelevant variables:\n")
-        if (x@data@withContinuous){
-          tmp <- data.frame(mean=x@param@paramContinuous@mu[,k], sd=x@param@paramContinuous@sd[,k])
-          if (any(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==0)){
-            cat("Parameters of countinous variables \n")
-            keep <- as.data.frame(tmp[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==0),])
-            rownames(keep) <- rownames(tmp)[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==0)]
-            colnames(keep) <- c("mean", "sd")
-            print(keep)
-          }
-          
-          cat("\n")
-        }
-        if (x@data@withInteger){
-          tmp <- data.frame(lambda=x@param@paramInteger@lambda[,k])
-          rownames(tmp)  <- rownames(x@param@paramInteger@lambda)
-          if (any(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==0)){
-            cat("Parameters of count variables \n")
-            keep <- as.data.frame(tmp[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==0),])
-            rownames(keep) <- rownames(tmp)[which(x@model@omega[names(x@model@omega)%in%rownames(tmp)]==0)]
-            colnames(keep) <- "lambda"
-            print(keep)
-          }
-          cat("\n")
-        }
-        
-        if (x@data@withCategorical){ 
-          maxcol <- 0
-          for (j in 1:x@data@dataCategorical@d) maxcol <- max(maxcol, length(x@data@dataCategorical@modalitynames[[j]]))
-          alpha <- matrix(0,x@data@dataCategorical@d, maxcol)
-          for (j in 1:x@data@dataCategorical@d)  alpha[j,1:length(x@data@dataCategorical@modalitynames[[j]])] <- round(x@param@paramCategorical@alpha[[j]][k,],6)
-          for (j in 1:ncol(alpha)) alpha[,j] <- as.character(alpha[,j])
-          for (j in 1:x@data@dataCategorical@d){
-            if (length(x@data@dataCategorical@modalitynames[[j]])<maxcol)
-              alpha[j, (length(x@data@dataCategorical@modalitynames[[j]])+1):maxcol] <- rep(".", maxcol-length(x@data@dataCategorical@modalitynames[[j]]))
-            
-          }
-          alpha <- data.frame(alpha)
-          colnames(alpha) <- paste("Level",1:ncol(alpha),sep=".")
-          rownames(alpha) <- names(x@param@paramCategorical@alpha)
-          if (any(x@model@omega[names(x@model@omega)%in%rownames(alpha)]==0)){
-            cat("Parameters of categorical variables \n")      
-            keep <- alpha[which(x@model@omega[names(x@model@omega)%in%rownames(alpha)]==0),]
-            rownames(keep) <- rownames(alpha)[which(x@model@omega[names(x@model@omega)%in%rownames(alpha)]==0)]
-            print(keep) 
-          }
-          cat("\n")
-        }
-      }
-      
-      
+    cat("Data set:\n   Number of individuals:", x@data@n,"\n")
+    if (x@data@withContinuous){
+      cat("   Number of continuous variables:", x@data@dataContinuous@d, "\n")
+      val <- round(100*(1-mean(x@data@dataContinuous@notNA)),2)
+      if (val>0)
+        cat("   Percentile of missing values for the continuous variables:", val,"\n")
     }
+    if (x@data@withInteger){
+      cat("   Number of count variables:", x@data@dataInteger@d, "\n")
+      val <- round(100*mean(1-x@data@dataInteger@notNA),2)
+      if (val>0)
+        cat("   Percentile of missing values for the integer variables:", val,"\n")
+    }
+    
+    if (x@data@withCategorical){
+      cat("   Number of categorical variables:", x@data@dataCategorical@d, "\n")
+      miss <- 100*sum(sweep(is.na(x@data@dataCategorical@data),1,x@data@dataCategorical@weightdata,"*")) / (x@data@n * x@data@dataCategorical@d)
+      if (miss>0)
+        cat("   Percentile of missing values for the categorical variables:", miss,"\n")
+    }
+    cat("\n")
+    
+    cat("Model:\n   Number of components:", x@model@g, "\n")
+    cat("   Model selection has been performed according to the", x@strategy@crit.varsel, " criterion \n")
+    
+    if (x@strategy@vbleSelec) cat("   Variable selection has been performed,", sum(x@model@omega)," (", round(100*sum(x@model@omega)/length(x@model@omega), 2),"% ) of the variables are relevant for clustering \n   \n")
+    
+    
+    
+    
+    if ((length(x@criteria@degeneracyrate)==1)&&(x@criteria@degeneracyrate != 1)){
+      cat("Information Criteria:\n")
+      cat("   loglike:", x@criteria@loglikelihood,"\n")    
+      cat("   AIC:    ", x@criteria@AIC,"\n")     
+      cat("   BIC:    ", x@criteria@BIC,"\n")    
+      cat("   ICL:    ", x@criteria@ICL,"\n")
+      if ((x@strategy@crit.varsel=="MICL")&&(x@strategy@vbleSelec==TRUE)){        
+        cat("   MICL:   ", x@criteria@MICL,"\n")    
+        cat("   Best values has been found ", x@criteria@cvrate, "times\n")
+      }  
+    }
+    cat("\n")
+    if ((length(x@criteria@degeneracyrate)==1) && (x@criteria@degeneracyrate>0.1))
+      cat("Warnings:\n  The rate of degeneracy for the EM algorithm is", x@criteria@degeneracyrate,"\n" )
   }
 )

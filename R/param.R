@@ -80,7 +80,7 @@ setGeneric(name= "convertparam", def = function(x) standardGeneric("convertparam
 
 setMethod( f = "convertparam",
            signature(x="VSLCMparamCategorical"),
-           definition = function(x) new("VSLCMparam", 
+           definition = function(x) new("VSLCMparam",
                                         pi=x@pi,
                                         paramContinuous=new("VSLCMparamContinuous"), paramInteger=new("VSLCMparamInteger"), paramCategorical=x)
 )
@@ -88,7 +88,7 @@ setMethod( f = "convertparam",
 
 setMethod( f = "convertparam",
            signature(x="VSLCMparamContinuous"),
-           definition = function(x) new("VSLCMparam", 
+           definition = function(x) new("VSLCMparam",
                                         pi=x@pi,
                                         paramContinuous=x, paramInteger=new("VSLCMparamInteger"), paramCategorical=new("VSLCMparamCategorical"))
 )
@@ -96,7 +96,7 @@ setMethod( f = "convertparam",
 
 setMethod( f = "convertparam",
            signature(x="VSLCMparamInteger"),
-           definition = function(x) new("VSLCMparam", 
+           definition = function(x) new("VSLCMparam",
                                         pi=x@pi,
                                         paramContinuous=new("VSLCMparamContinuous"), paramInteger=x, paramCategorical=new("VSLCMparamCategorical"))
 )

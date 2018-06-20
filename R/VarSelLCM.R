@@ -6,8 +6,8 @@
 ##' \tabular{ll}{
 ##'   Package: \tab VarSelLCM\cr 
 ##'   Type: \tab Package\cr 
-##'   Version: \tab 2.1.1\cr
-##'   Date: \tab 2018-04-06\cr 
+##'   Version: \tab 2.1.2\cr
+##'   Date: \tab 2018-06-04\cr 
 ##'   License: \tab GPL-3\cr  
 ##'   LazyLoad: \tab yes\cr
 ##'   URL:  \tab http://varsellcm.r-forge.r-project.org/\cr
@@ -19,7 +19,7 @@
 ##' 
 ##' Function \link{VarSelImputation} permits the imputation of missing values by using the model parameters. 
 ##' 
-##' Tool methods \link{summary}, \link{print} and \link{plot} are also available for facilitating the interpretation.
+##' Standard tool methods (e.g., \link{summary}, \link{print}, \link{plot}, \link{coef}, \link{fitted}, \link{predict}...) are available for facilitating the interpretation.
 ##' 
 ##' @name VarSelLCM-package
 ##' @aliases VarSelLCM
@@ -37,7 +37,7 @@
 ##' @useDynLib VarSelLCM
 ##'
 ##' @author
-##' Matthieu Marbac and Mohammed Sedki Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
+##' Matthieu Marbac and Mohammed Sedki. Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
 ##'
 ##' @references Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
 ##' 
@@ -45,55 +45,88 @@
 ##' 
 ##' @examples
 ##' \dontrun{
-##' # Package loading
-##' require(VarSelLCM)
-##' 
-##' # Data loading:
-##' # x contains the observed variables
-##' # z the known statu (i.e. 1: absence and 2: presence of heart disease)
-##' data(heart)
-##' z <- heart[,"Class"]
-##' x <- heart[,-13]
-##' 
-##' # Cluster analysis without variable selection
-##' res_without <- VarSelCluster(x, 2, vbleSelec = FALSE)
-##' 
-##' # Cluster analysis with variable selection (with parallelisation)
-##' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
-##' 
-##' # Confusion matrices and ARI: variable selection decreases the misclassification error rate
-##' print(table(z, res_without@partitions@zMAP))
-##' print(table(z, res_with@partitions@zMAP))
-##' ARI(z, res_without@partitions@zMAP)
-##' ARI(z, res_with@partitions@zMAP)
-##' 
-##' # Summary of the best model
-##' summary(res_with)
-##' 
-##' # Parameters of the best model
-##' print(res_with)
-##' 
-##' # Opening Shiny application to easily see the results
-##' VarSelShiny(res_with)
-##' 
-##' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
-##' plot(out, type="bar")
-##' # Boxplot for continuous (or interger) variable
-##' plot(out, y="MaxHeartRate", type="boxplot")
-##'
-##' # Empirical and theoretical distributions (to check that clustering is pertinent)
-##' plot(out, y="MaxHeartRate", type="cdf")
-##'
-##'# Summary of categorical variable
-##' plot(out, y="Sex")
-##' 
-##' # Summary of the probabilities of missclassification
-##' plot(out, type="probs-class")
-##' 
-##' # Imputation by posterior mean for the first observation
-##' not.imputed <- heart[1,-13]
-##' imputed <- VarSelImputation(out)[1,]
-##' rbind(not.imputed, imputed)
+#' # Package loading
+#' require(VarSelLCM)
+#' 
+#' # Data loading:
+#' # x contains the observed variables
+#' # z the known statu (i.e. 1: absence and 2: presence of heart disease)
+#' data(heart)
+#' ztrue <- heart[,"Class"]
+#' x <- heart[,-13]
+#' 
+#' # Cluster analysis without variable selection
+#' res_without <- VarSelCluster(x, 2, vbleSelec = FALSE, crit.varsel = "BIC")
+#' 
+#' # Cluster analysis with variable selection (with parallelisation)
+#' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40, crit.varsel = "BIC")
+#' 
+#' # Comparison of the BIC for both models:
+#' # variable selection permits to improve the BIC
+#' BIC(res_without)
+#' BIC(res_with)
+#' 
+#' # Comparison of the partition accuracy. 
+#' # ARI is computed between the true partition (ztrue) and its estimators
+#' # ARI is an index between 0 (partitions are independent) and 1 (partitions are equals)
+#' # variable selection permits to improve the ARI
+#' # Note that ARI cannot be used for model selection in clustering, because there is no true partition
+#' ARI(ztrue, fitted(res_without))
+#' ARI(ztrue, fitted(res_with))
+#' 
+#' # Estimated partition
+#' fitted(res_with)
+#' 
+#' # Estimated probabilities of classification
+#' head(fitted(res_with, type="probability"))
+#' 
+#' # Summary of the probabilities of missclassification
+#' plot(res_with, type="probs-class")
+#' 
+#' # Confusion matrices and ARI (only possible because the "true" partition is known).
+#' # ARI is computed between the true partition (ztrue) and its estimators
+#' # ARI is an index between 0 (partitions are independent) and 1 (partitions are equals)
+#' # variable selection permits to improve the ARI
+#' # Note that ARI cannot be used for model selection in clustering, because there is no true partition
+#' # variable selection decreases the misclassification error rate
+#' table(ztrue, fitted(res_without))
+#' table(ztrue, fitted(res_with))
+#' ARI(ztrue,  fitted(res_without))
+#' ARI(ztrue, fitted(res_with))
+#' 
+#' # Summary of the best model
+#' summary(res_with)
+#' 
+#' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+#' plot(res_with)
+#' 
+#' # More detailed output
+#' print(res_with)
+#' 
+#' # Print model parameter
+#' coef(res_with)
+#' 
+#' # Boxplot for the continuous variable MaxHeartRate
+#' plot(x=res_with, y="MaxHeartRate")
+#' 
+#' # Empirical and theoretical distributions of the most discriminative variable
+#' # (to check that the distribution is well-fitted)
+#' plot(res_with, y="MaxHeartRate", type="cdf")
+#' 
+#' # Summary of categorical variable
+#' plot(res_with, y="Sex")
+#' 
+#' # Probabilities of classification for new observations 
+#' predict(res_with, newdata = x[1:3,])
+#' 
+#' # Imputation by posterior mean for the first observation
+#' not.imputed <- x[1,]
+#' imputed <- VarSelImputation(res_with, x[1,], method = "sampling")
+#' rbind(not.imputed, imputed)
+#' 
+#' # Opening Shiny application to easily see the results
+#' VarSelShiny(res_with)
+#' 
 ##' 
 ##' }
 ##' 
@@ -102,12 +135,28 @@ NULL
 ##' Statlog (Heart) Data Set
 ##' 
 ##'  This dataset is a heart disease database similar to a database already present in the repository (Heart Disease databases) but in a slightly different form.
-##'  
-##'  
+##' 
+##' 12 variables are used to cluster the observations 
+##' \itemize{
+#'  \item{age (integer)}
+#'  \item{sex (binary)}
+#'  \item{chest pain type (categorical with 4 levels)}
+#'  \item{resting blood pressure (continuous)}
+#'  \item{serum cholestoral in mg/dl (continuous)}
+#'  \item{fasting blood sugar > 120 mg/dl (binary)}
+#'  \item{resting electrocardiographic results (categorical with 3 levels)}
+#'  \item{maximum heart rate achieved (continuous)}
+#'  \item{exercise induced angina (binary)}
+#'  \item{the slope of the peak exercise ST segment (categorical with 3 levels)}
+#'  \item{number of major vessels  colored by flourosopy  (categorical with 4 levels)}
+#'  \item{thal: 3 = normal; 6 = fixed defect; 7 = reversable defect (categorical with 3 levels)}
+#'  }
+#'  
+#'  1 variable define a ''true'' partition: Absence (1) or presence (2) of heart disease 
 ##' 
 ##'
 ##' 
-##' @references Website:http://archive.ics.uci.edu/ml/datasets/statlog+(heart)
+##' @references  UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science: http://archive.ics.uci.edu/ml/datasets/statlog+(heart)
 ##' @name heart
 ##' @docType data
 ##' @keywords datasets
@@ -165,57 +214,83 @@ VarSelCluster.singleg <- function(x, g, vbleSelec, crit.varsel, initModel,  nbco
 ##' 
 ##' @examples
 ##' \dontrun{
-##' # Package loading
-##' require(VarSelLCM)
-##' 
-##' # Data loading:
-##' # x contains the observed variables
-##' # z the known statu (i.e. 1: absence and 2: presence of heart disease)
-##' data(heart)
-##' z <- heart[,"Class"]
-##' x <- heart[,-13]
-##' 
-##' # Cluster analysis without variable selection
-##' res_without <- VarSelCluster(x, 2, vbleSelec = FALSE)
-##' 
-##' # Cluster analysis with variable selection (with parallelisation)
-##' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
-##' 
-##' # Confusion matrices and ARI: variable selection decreases the misclassification error rate
-##' print(table(z, res_without@partitions@zMAP))
-##' print(table(z, res_with@partitions@zMAP))
-##' ARI(z, res_without@partitions@zMAP)
-##' ARI(z, res_with@partitions@zMAP)
-##' 
-##' # Summary of the best model
-##' summary(res_with)
-##' 
-##' # Opening Shiny application to easily see the results
-##' VarSelShiny(res_with)
-##' 
-##' # Parameters of the best model
-##' print(res_with)
-##' 
-##' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
-##' plot(out, type="bar")
-##' # Boxplot for continuous (or interger) variable
-##' plot(out, y="MaxHeartRate", type="boxplot")
-##'
-##' # Empirical and theoretical distributions (to check that clustering is pertinent)
-##' plot(out, y="MaxHeartRate", type="cdf")
-##'
-##'# Summary of categorical variable
-##' plot(out, y="Sex")
-##' 
-##' # Summary of the probabilities of missclassification
-##' plot(out, type="probs-class")
-##' 
-##' # Imputation by posterior mean for the first observation
-##' not.imputed <- heart[1,-13]
-##' imputed <- VarSelImputation(out)[1,]
-##' rbind(not.imputed, imputed)
+#' # Package loading
+#' require(VarSelLCM)
+#' 
+#' # Data loading:
+#' # x contains the observed variables
+#' # z the known statu (i.e. 1: absence and 2: presence of heart disease)
+#' data(heart)
+#' ztrue <- heart[,"Class"]
+#' x <- heart[,-13]
+#' 
+#' # Cluster analysis without variable selection
+#' res_without <- VarSelCluster(x, 2, vbleSelec = FALSE, crit.varsel = "BIC")
+#' 
+#' # Cluster analysis with variable selection (with parallelisation)
+#' res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40, crit.varsel = "BIC")
+#' 
+#' # Comparison of the BIC for both models:
+#' # variable selection permits to improve the BIC
+#' BIC(res_without)
+#' BIC(res_with)
+#' 
+#' # Confusion matrices and ARI (only possible because the "true" partition is known).
+#' # ARI is computed between the true partition (ztrue) and its estimators
+#' # ARI is an index between 0 (partitions are independent) and 1 (partitions are equals)
+#' # variable selection permits to improve the ARI
+#' # Note that ARI cannot be used for model selection in clustering, because there is no true partition
+#' # variable selection decreases the misclassification error rate
+#' table(ztrue, fitted(res_without))
+#' table(ztrue, fitted(res_with))
+#' ARI(ztrue,  fitted(res_without))
+#' ARI(ztrue, fitted(res_with))
+#'  
+#' # Estimated partition
+#' fitted(res_with)
+#' 
+#' # Estimated probabilities of classification
+#' head(fitted(res_with, type="probability"))
+#' 
+#' # Summary of the probabilities of missclassification
+#' plot(res_with, type="probs-class")
+#' 
+#' # Summary of the best model
+#' summary(res_with)
+#' 
+#' # Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+#' plot(res_with)
+#' 
+#' # More detailed output
+#' print(res_with)
+#' 
+#' # Print model parameter
+#' coef(res_with)
+#' 
+#' # Boxplot for the continuous variable MaxHeartRate
+#' plot(x=res_with, y="MaxHeartRate")
+#' 
+#' # Empirical and theoretical distributions of the most discriminative variable 
+#' # (to check that the distribution is well-fitted)
+#' plot(res_with, y="MaxHeartRate", type="cdf")
+#' 
+#' # Summary of categorical variable
+#' plot(res_with, y="Sex")
+#' 
+#' # Probabilities of classification for new observations 
+#' predict(res_with, newdata = x[1:3,])
+#' 
+#' # Imputation by posterior mean for the first observation
+#' not.imputed <- x[1,]
+#' imputed <- VarSelImputation(res_with, x[1,], method = "sampling")
+#' rbind(not.imputed, imputed)
+#' 
+#' # Opening Shiny application to easily see the results
+#' VarSelShiny(res_with)
+#' 
 ##' 
 ##' }
+##' 
 ##' @export
 ##'
 ##'
@@ -328,41 +403,9 @@ BuildS4Reference <- function(x, g, initModel, vbleSelec, crit.varsel, paramEstim
 ## Fonctions principales du package, les seules accessibles par l'utilisateur sont VarSelCluster,
 ## Imputation (voir Imputation.R) et MICL
 ########################################################################################################################
-setGeneric ( name= "MICL",  def = function(x, obj){ standardGeneric("MICL")})
-## Pour les variables continues
-setMethod( f = "MICL", 
-           signature(x="data.frame", obj="VSLCMresultsContinuous"), 
-           definition = function(x, obj){
-             obj@strategy@crit.varsel <- TRUE
-             obj@data  <- VSLCMdata(x)
-             tmp <- ComputeMICL(obj, "Continuous")
-             return(list(MICL=tmp@criteria@MICL, zOPT=tmp@partitions@zOPT+1))         
-           }
-)
-## Pour les variables entieres
-setMethod( f = "MICL", 
-           signature(x="data.frame", obj="VSLCMresultsInteger"), 
-           definition = function(x, obj){
-             obj@strategy@crit.varsel <- TRUE
-             # travail sur les donnees manquantes
-             obj@data  <- VSLCMdata(x)
-             tmp <- ComputeMICL(obj, "Integer")
-             return(list(MICL=tmp@criteria@MICL, zOPT=tmp@partitions@zOPT+1))          
-           }
-)
-## Pour les variables categorielles
-setMethod( f = "MICL", 
-           signature(x="data.frame", obj="VSLCMresultsCategorical"), 
-           definition = function(x, obj){
-             obj@strategy@crit.varsel <- TRUE
-             obj@data  <- VSLCMdata(x)
-             tmp <- ComputeMICL(obj, "Categorical")
-             tmp@partitions@zOPT <-  1 + as.numeric(obj@partitions@zOPT[attr(obj@data@shortdata,"index")])
-             return(list(MICL=tmp@criteria@MICL, zOPT=tmp@partitions@zOPT))       
-           }
-)
+setGeneric ( name= "MICLcomputation",  def = function(x, obj){ standardGeneric("MICLcomputation")})
 ## Pour les variables mixed
-setMethod( f = "MICL", 
+setMethod( f = "MICLcomputation", 
            signature(x="data.frame", obj="VSLCMresults"), 
            definition = function(x, obj){
              obj@strategy@crit.varsel <- TRUE

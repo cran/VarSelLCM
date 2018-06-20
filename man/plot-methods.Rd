@@ -3,24 +3,59 @@
 \docType{methods}
 \name{plot}
 \alias{plot}
+\alias{plot,VSLCMresults-method}
 \alias{plot,VSLCMresults,character-method}
-\alias{plot}
 \alias{plot,VSLCMresults,ANY-method}
-\title{This function draws information about an instance of \code{\linkS4class{VSLCMresults}}.}
+\title{Plots of an instance of \code{\linkS4class{VSLCMresults}}}
 \usage{
-\S4method{plot}{VSLCMresults,character}(x, y, type, ylim = NULL)
+\S4method{plot}{VSLCMresults,character}(x, y, type = "boxplot", ylim = c(1,
+  x@data@d))
 }
 \arguments{
 \item{x}{instance of  \code{\linkS4class{VSLCMresults}}.}
 
-\item{y}{character. The name of the variable we are interested in. Otherwise, graphic about general results is ploted.}
+\item{y}{character. The name of the variable to ploted (only used if type="boxplot" or type="cdf").}
 
-\item{type}{character. Can be cdf or boxplot to plot the distribution of the variable we are interested in. Otherwise, must be pie or bar to obtain information about the discriminative power of the variables and must be probs-overall or probs-class to obtain information about the misclassification probabilities.}
+\item{type}{character. The type of plot ("bar": barplot of the disciminative power, "pie": pie of the discriminative power, "probs-overall": histogram of the probabilities of misclassification, "probs-class": histogram of the probabilities of misclassification per cluster, "boxplot": boxplot of a single variable per cluster, "cdf": distribution of a single variable per cluster).}
 
 \item{ylim}{numeric. Define the range of the most discriminative variables to considered (only use if type="pie" or type="bar")}
-
-\item{...}{Additional argument list that might not ever be used.}
 }
 \description{
-This function draws information about an instance of \code{\linkS4class{VSLCMresults}}.
+This function proposes different plots of an instance of \code{\linkS4class{VSLCMresults}}.
+It permits to visualize:
+\itemize{
+ \item{the discriminative power of the variables (type="bar" or type="pie"). The larger is the discriminative power of a variable, the more explained are the clusters by this variable.}
+ \item{the probabilities of misclassification (type="probs-overall" or type="probs-class").}
+ \item{the distribution of a signle variable (y is the name of the variable and type="boxplot" or type="cdf").}
+ }
+}
+\examples{
+\dontrun{
+require(VarSelLCM)
+
+# Data loading:
+# x contains the observed variables
+# z the known statu (i.e. 1: absence and 2: presence of heart disease)
+data(heart)
+ztrue <- heart[,"Class"]
+x <- heart[,-13]
+
+# Cluster analysis with variable selection (with parallelisation)
+res_with <- VarSelCluster(x, 2, nbcores = 2, initModel=40)
+
+# Summary of the probabilities of missclassification
+plot(res_with, type="probs-class")
+
+# Discriminative power of the variables (here, the most discriminative variable is MaxHeartRate)
+plot(res_with)
+
+# Boxplot for the continuous variable MaxHeartRate
+plot(res_with, y="MaxHeartRate")
+
+# Empirical and theoretical distributions (to check that the distribution is well-fitted)
+plot(res_with, y="MaxHeartRate", type="cdf")
+
+# Summary of categorical variable
+plot(res_with, y="Sex")
+}
 }
