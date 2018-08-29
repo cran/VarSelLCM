@@ -2,13 +2,13 @@ Package: VarSelLCM
 Type: Package
 Title: Variable Selection for Model-Based Clustering of Mixed-Type Data
         Set with Missing Values
-Version: 2.1.2
-Date: 2018-06-20
+Version: 2.1.3
+Date: 2018-08-27
 Author: Matthieu Marbac and Mohammed Sedki
 Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>
 Description: Full model selection (detection of the relevant features and estimation of the number of clusters) for model-based clustering (see reference here <doi:10.1007/s11222-016-9670-1>). Data to analyze can be continuous, categorical, integer or mixed. Moreover, missing values can occur and do not necessitate any pre-processing. Shiny application permits an easy interpretation of the results.
 License: GPL (>= 2)
-Depends: R (>= 3.4)
+Depends: R (>= 3.3)
 Imports: methods, Rcpp (>= 0.11.1), parallel, mgcv, ggplot2, shiny
 URL: http://varsellcm.r-forge.r-project.org/
 LinkingTo: Rcpp, RcppArmadillo
@@ -19,11 +19,14 @@ Collate: 'CheckInputs.R' 'data.R' 'model.R' 'param.R' 'results.R'
         'VarSelLCM.R' 'RcppExports.R' 'Plot.R' 'Imputation.R'
         'withoutmixture.R' 'VarSelShiny.R' 'ARI.R' 'Extractors.R'
         'Predict.R'
-Packaged: 2018-06-20 16:49:25 UTC; sedki
+Packaged: 2018-08-27 19:14:42 UTC; rforge
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2018-06-20 17:37:57 UTC
+Date/Publication: 2018-08-29 10:24:28 UTC
 Suggests: knitr, rmarkdown, dplyr, htmltools, scales, plyr
 VignetteBuilder: knitr
 BuildVignettes: yes
+Repository/R-Forge/Project: varsellcm
+Repository/R-Forge/Revision: 234
+Repository/R-Forge/DateTimeStamp: 2018-08-27 18:56:49

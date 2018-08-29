@@ -1,4 +1,4 @@
-c183a63015e5e0caacff93a6a07ad244 *DESCRIPTION
+607fa53250d3339259ed0d994737660a *DESCRIPTION
 cb096a77fb79e3eb8dec50b77355fe52 *NAMESPACE
 935275791a015ca7306a321b7b033e6f *R/ARI.R
 c7e257d3767ef572be3956075cf7a8c1 *R/CheckInputs.R
@@ -11,20 +11,19 @@ fca931325145918ed99b972de0e29041 *R/Plot.R
 57da6dd6f4ce62d7da710cf1d8242bd4 *R/Print.R
 e9a7273bf84661e49348f56eec00b19e *R/RcppExports.R
 bb546e7876e5f041ffc53c656531dd34 *R/Summary.R
-e7936cedb7408491e6978ec49ff7a072 *R/VarSelLCM.R
+7a086007ad50612a66831b753654bcc2 *R/VarSelLCM.R
 4355f66138f7893b78039597196828d7 *R/VarSelShiny.R
 a2d635cccdca8ee7f0b85ed243e54713 *R/data.R
 34586b3017484d9e947765140dc692f3 *R/model.R
 b704b6e93f339f019ee625bec47772d5 *R/param.R
 b37e484d2bb1ea1f51153c013cb8e926 *R/results.R
 c36a4525cb4a9095a0615ee78629a1dc *R/withoutmixture.R
-fb8aa239d45f3624a500f56f53f477c7 *build/vignette.rds
-b8ebb8162edbc83480a874ae2c5c4b64 *data/heart.rda
+ca34e299a9362ea1d7b07502c6f25023 *build/vignette.rds
+babe155d97a920fb38d2ea24a70a850e *data/heart.rda
 c5f680e01166bdc1e17ab82637e70c5d *inst/CITATION
-621b7f5a445bc532dcfafc4c93f5baec *inst/NEWS
-cd4e6aaf74d774b117e1cfee6abbf476 *inst/doc/VarSelLCM.R
+0d02363c85e4122e7f8ad09341284aaa *inst/NEWS
 0a9a266616b10927e0601786320cff82 *inst/doc/VarSelLCM.Rmd
-48fa387600fb298476b886bf0eb8f89b *inst/doc/VarSelLCM.pdf
+74c94dc224f5b3333f2cd620a760704d *inst/doc/VarSelLCM.pdf
 62bb1c0987af3d56087900d3663db994 *inst/include/Algorithm.h
 b36de36d3d8c993e2a29c5866e92f80f *inst/include/AlgorithmCategorical.h
 1a0897416c1d3377a108888e3df5deb0 *inst/include/AlgorithmContinuous.h
@@ -63,7 +62,7 @@ cc0e0ba272f314f095fd15e02e679e45 *man/VSLCMparamInteger-class.Rd
 71ef8644ad634a66fea2d22c4af38a69 *man/VSLCMpartitions-class.Rd
 db43db159789a1661e46168262f74cbc *man/VSLCMresults-class.Rd
 91084cf7aacb17a08a6991c112c6d290 *man/VSLCMstrategy-class.Rd
-a6548a8df68f42addb563cc57d26d7b4 *man/VarSelCluster.Rd
+ce146939abeede4e921f3626b0a299a7 *man/VarSelCluster.Rd
 fb06e24db7ec6111027cd22e494f80b7 *man/VarSelImputation.Rd
 8d93d2f651950cb54c40bc9f76dbb813 *man/VarSelLCM-package.Rd
 ebcc88fbaa521c4fedbfb85f9aced45d *man/VarSelShiny.Rd
@@ -100,4 +99,3 @@ e22dce7f00837d54c3be9243b59a4920 *src/XEMContinuous.cpp
 53809ef3d5d5df21b49fc09661d5a63b *src/XEMMixed.cpp
 f6b7d9f9d787069b26c25234892637a8 *src/XEMPen.cpp
 0a9a266616b10927e0601786320cff82 *vignettes/VarSelLCM.Rmd
-4d320e69ee129f8d1cd8f9a10277624a *vignettes/VarSelLCM.html

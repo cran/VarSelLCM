@@ -6,8 +6,8 @@
 ##' \tabular{ll}{
 ##'   Package: \tab VarSelLCM\cr 
 ##'   Type: \tab Package\cr 
-##'   Version: \tab 2.1.2\cr
-##'   Date: \tab 2018-06-04\cr 
+##'   Version: \tab 2.1.3\cr
+##'   Date: \tab 2018-08-27\cr 
 ##'   License: \tab GPL-3\cr  
 ##'   LazyLoad: \tab yes\cr
 ##'   URL:  \tab http://varsellcm.r-forge.r-project.org/\cr
@@ -196,7 +196,7 @@ VarSelCluster.singleg <- function(x, g, vbleSelec, crit.varsel, initModel,  nbco
 ##' @param x data.frame/matrix. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"
 ##' @param gvals numeric. It defines number of components to consider.
 ##' @param vbleSelec logical. It indicates if a variable selection is done
-##' @param crit.varsel character. It defines the information criterion used for the variable selection. Without variable selection, you can use one of the three criteria: "AIC", "BIC" and "ICL". With variable selection, you can use "AIC", BIC" and "MICL".
+##' @param crit.varsel character. It defines the information criterion used for model selection. Without variable selection, you can use one of the three criteria: "AIC", "BIC" and "ICL". With variable selection, you can use "AIC", BIC" and "MICL".
 ##' @param initModel numeric. It gives the number of initializations of the alternated algorithm maximizing the MICL criterion (only used if crit.varsel="MICL")
 ##' @param nbcores numeric.  It defines the numerber of cores used by the alogrithm
 ##' @param discrim numeric. It indicates if each variable is discrimiative (1) or irrelevant (0) (only used if vbleSelec=0)

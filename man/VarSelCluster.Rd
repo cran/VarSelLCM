@@ -15,7 +15,7 @@ VarSelCluster(x, gvals, vbleSelec = TRUE, crit.varsel = "BIC",
 
 \item{vbleSelec}{logical. It indicates if a variable selection is done}
 
-\item{crit.varsel}{character. It defines the information criterion used for the variable selection. Without variable selection, you can use one of the three criteria: "AIC", "BIC" and "ICL". With variable selection, you can use "AIC", BIC" and "MICL".}
+\item{crit.varsel}{character. It defines the information criterion used for model selection. Without variable selection, you can use one of the three criteria: "AIC", "BIC" and "ICL". With variable selection, you can use "AIC", BIC" and "MICL".}
 
 \item{initModel}{numeric. It gives the number of initializations of the alternated algorithm maximizing the MICL criterion (only used if crit.varsel="MICL")}
 

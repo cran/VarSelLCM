@@ -1,3 +1,6 @@
+Version 2.1.2 (2018-08)
+    o Correction of English typos
+    
 Version 2.1.2 (2018-03)
     o Plot function has default arguments
     o Extraction functions predict(), coef(), fitted(), AIC(), BIC() and MICL() are added.
