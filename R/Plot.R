@@ -5,8 +5,9 @@ cdfmixtureGauss <- function(u, pi, mu, sd){
   out
 }
 
+#' @importFrom rlang .data
 varsellcm.plot.cont.cdf <- function(df, y, param){
-  graphic <- ggplot(df, aes(x=df$x)) +   
+  graphic <- ggplot(df, aes(x=.data$x)) +   
     stat_ecdf(geom = "step", aes(colour="Empirical"), size=1) +
     stat_function(fun = cdfmixtureGauss, args = param, aes(colour = "Theoretical"), size=1) +
     scale_colour_manual("CDF", values = c("black", "dodgerblue3")) +
@@ -17,10 +18,11 @@ varsellcm.plot.cont.cdf <- function(df, y, param){
   print(graphic)
 }
 
+#' @importFrom rlang .data
 varsellcm.plot.boxplot <- function(df, y){
-  graphic <- ggplot(df, aes(x=class, y=df$x, fill=class)) + 
+  graphic <- ggplot(df, aes(x=.data$class, y=.data$x, fill=.data$class)) + 
     geom_boxplot() +   
-    guides(fill=FALSE) +
+    guides(fill="none") +
     coord_flip() +
     scale_y_continuous(name=y)  + 
     ggtitle(paste("Boxplots of", y)) +  
@@ -35,8 +37,9 @@ cdfmixturePoiss <- function(u, pi, lam){
   out
 }
 
+#' @importFrom rlang .data
 varsellcm.plot.inte.cdf <- function(df, y, param){
-  graphic <- ggplot(df, aes(x=df$x)) +   
+  graphic <- ggplot(df, aes(x=.data$x)) +   
     stat_ecdf(geom = "step", aes(colour="Empirical"), size=1) +
     stat_function(fun = cdfmixturePoiss, args = param, aes(colour = "Theoretical"), size=1) +
     scale_colour_manual("CDF", values = c("black", "dodgerblue3")) +
@@ -47,6 +50,7 @@ varsellcm.plot.inte.cdf <- function(df, y, param){
   print(graphic)
 }
 
+#' @importFrom rlang .data
 varsellcm.plot.cate  <- function(tmp, y){
   
   df <- data.frame(class=as.factor(rep(1:nrow(tmp), ncol(tmp))),
@@ -55,9 +59,9 @@ varsellcm.plot.cate  <- function(tmp, y){
   
   
   
-  graph <- ggplot(data=df, aes(x=levels, y=df$probabilties, fill=class)) +
+  graph <- ggplot(data=df, aes(x=.data$levels, y=.data$probabilties, fill=class)) +
     geom_bar(stat="identity", position=position_dodge())+
-    geom_text(aes(label=df$probabilties), vjust=1.6, color="black",  position = position_dodge(0.9), size=3.5)+
+    geom_text(aes(label=.data$probabilties), vjust=1.6, color="black",  position = position_dodge(0.9), size=3.5)+
     scale_fill_brewer(palette="Paired")+
     scale_y_continuous(name="probability")+
     theme_minimal() +
@@ -165,9 +169,10 @@ setMethod(
     if (x@data@withCategorical){
       if (y %in% names(x@param@paramCategorical@alpha)){
         loc2 <- which(names(x@param@paramCategorical@alpha) ==y)
-        ifelse (length(loc2)==1,
-                varsellcm.plot.cate(x@param@paramCategorical@alpha[[loc2]], y),
-                stop("y must be the name of a variable in the analyzed data"))
+        if(length(loc2)==1)
+          varsellcm.plot.cate(x@param@paramCategorical@alpha[[loc2]], y)
+        else
+          stop("y must be the name of a variable in the analyzed data")
         
         vu <- TRUE
       }
@@ -178,7 +183,7 @@ setMethod(
   }
 )
 
-
+#' @importFrom rlang .data
 setMethod(
   f="plot",
   signature = c("VSLCMresults"),
@@ -191,7 +196,7 @@ setMethod(
     ylim[1] <- min(max(ylim[1], 0), ylim[2])
     df <- df[ylim[1]:ylim[2], , drop=F]
     if (type=="pie"){
-      pie<- ggplot(df, aes(x="", y=df$discrim.power, fill=df$variables))+
+      pie<- ggplot(df, aes(x="", y=.data$discrim.power, fill=.data$variables))+
         scale_y_continuous(name="discriminative power") +
         geom_bar(width = 1, stat = "identity") +
         coord_polar("y", start=0)  +
@@ -199,10 +204,10 @@ setMethod(
         theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5))
       print(pie)
     }else if (type=="bar"){
-      bar <- ggplot(data=df, aes(x=df$rg, y=df$discrim.power, fill=df$variables)) +
+      bar <- ggplot(data=df, aes(x=.data$rg, y=.data$discrim.power, fill=.data$variables)) +
         scale_y_continuous(name="discriminative power") +
         geom_bar(stat="identity", position=position_dodge())+
-        geom_text(aes(label=round(df$discrim.power,2)), vjust=-0.1, color="black",
+        geom_text(aes(label=round(.data$discrim.power,2)), vjust=-0.1, color="black",
                   position = position_dodge(0.9), size=3.5)+
         scale_x_discrete(name="Variables")+
         scale_fill_brewer(palette="Paired")+

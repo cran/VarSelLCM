@@ -1,5 +1,5 @@
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_CPPFLAGS = -I../inst/include
+PKG_CXXFLAGS = -I../inst/include  -DARMA_USE_CURRENT
 PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 

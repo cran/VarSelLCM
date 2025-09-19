@@ -111,7 +111,9 @@ void XEMPen::Run(){
     m_nbdegenere += degeneracy;
   }
   uword  index;
-  double indicebest = (loglikepen).max(index);
+  double indicebest;
+  index = (loglikepen).index_max();
+  
   SwitchCurrent(index);
   // important pour obtenir la bonne partition a la sortie
   indicebest = ComputeLoglikepen();
@@ -129,7 +131,7 @@ colvec XEMPen::FindZMAP(){
   uword  index;
   double max_val=0;
   for (int i=0; i<tmplogproba.n_rows; i++){
-    max_val = (tmplogproba.row(i)).max(index);
+    index = (tmplogproba.row(i)).index_max();
     zMAP(i)=index;
   }
   return zMAP;

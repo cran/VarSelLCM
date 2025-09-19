@@ -60,7 +60,7 @@ void XEM::Run(){
         }
       }
       uword  index;
-      double indicebest = (loglikeSmall).max(index);
+      index = (loglikeSmall).index_max();
       SwitchParamCurrent(index);
       loglikeoutput = ComputeLogLike();      
       indices = sort_index(loglikeSmall);      
@@ -71,9 +71,9 @@ void XEM::Run(){
 colvec XEM::FindZMAP(){
   Col<double> zMAP=ones<vec>(tmplogproba.n_rows);
   uword  index;
-  double max_val=0;
+  //double max_val=0;
   for (int i=0; i<tmplogproba.n_rows; i++){
-    max_val = (tmplogproba.row(i)).max(index);
+    index = (tmplogproba.row(i)).index_max();
     zMAP(i)=index;
   }
   return zMAP;

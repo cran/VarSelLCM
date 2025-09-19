@@ -12,8 +12,8 @@ Model-based clustering with variable selection and estimation of the number of c
 \tabular{ll}{
   Package: \tab VarSelLCM\cr 
   Type: \tab Package\cr 
-  Version: \tab 2.1.2\cr
-  Date: \tab 2018-06-04\cr 
+  Version: \tab 2.1.3\cr
+  Date: \tab 2018-08-27\cr 
   License: \tab GPL-3\cr  
   LazyLoad: \tab yes\cr
   URL:  \tab http://varsellcm.r-forge.r-project.org/\cr
@@ -23,7 +23,7 @@ The main function to use is \link{VarSelCluster}. Function \link{VarSelCluster} 
 
 Function \link{VarSelShiny} runs a shiny application which permits an easy interpretation of the clustering results.
 
-Function \link{VarSelImputation} permits the imputation of missing values by using the model parameters.
+Function \link{VarSelImputation} permits the imputation of missing values by using the model parameters. 
 
 Standard tool methods (e.g., \link{summary}, \link{print}, \link{plot}, \link{coef}, \link{fitted}, \link{predict}...) are available for facilitating the interpretation.
 }
@@ -119,6 +119,13 @@ VarSelShiny(res_with)
 Marbac, M. and Sedki, M. (2017). Variable selection for model-based clustering using the integrated completed-data likelihood. Statistics and Computing, 27 (4), 1049-1063.
 
 Marbac, M. and Patin, E. and Sedki, M. (2018). Variable selection for mixed data clustering: Application in human population genomics. Journal of classification, to appear.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://varsellcm.r-forge.r-project.org/}
+}
+
 }
 \author{
 Matthieu Marbac and Mohammed Sedki. Maintainer: Mohammed Sedki <mohammed.sedki@u-psud.fr>

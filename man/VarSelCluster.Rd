@@ -4,9 +4,20 @@
 \alias{VarSelCluster}
 \title{Variable selection and clustering.}
 \usage{
-VarSelCluster(x, gvals, vbleSelec = TRUE, crit.varsel = "BIC",
-  initModel = 50, nbcores = 1, discrim = rep(1, ncol(x)), nbSmall = 250,
-  iterSmall = 20, nbKeep = 50, iterKeep = 1000, tolKeep = 10^(-6))
+VarSelCluster(
+  x,
+  gvals,
+  vbleSelec = TRUE,
+  crit.varsel = "BIC",
+  initModel = 50,
+  nbcores = 1,
+  discrim = rep(1, ncol(x)),
+  nbSmall = 250,
+  iterSmall = 20,
+  nbKeep = 50,
+  iterKeep = 1000,
+  tolKeep = 10^(-6)
+)
 }
 \arguments{
 \item{x}{data.frame/matrix. Rows correspond to observations and columns correspond to variables. Continuous variables must be "numeric", count variables must be "integer" and categorical variables must be "factor"}

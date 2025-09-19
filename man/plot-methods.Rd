@@ -8,8 +8,7 @@
 \alias{plot,VSLCMresults,ANY-method}
 \title{Plots of an instance of \code{\linkS4class{VSLCMresults}}}
 \usage{
-\S4method{plot}{VSLCMresults,character}(x, y, type = "boxplot", ylim = c(1,
-  x@data@d))
+\S4method{plot}{VSLCMresults,character}(x, y, type = "boxplot", ylim = c(1, x@data@d))
 }
 \arguments{
 \item{x}{instance of  \code{\linkS4class{VSLCMresults}}.}
