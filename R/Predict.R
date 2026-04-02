@@ -11,12 +11,12 @@ proba.post <- function(object, newdata){
     }else if (nom %in% rownames(object@param@paramInteger@lambda)){
       who <- which(nom == rownames(object@param@paramInteger@lambda))
       for (k in 1:object@model@g) logprob[where,k] <- logprob[where,k] + dpois(xnotna, object@param@paramInteger@lambda[who,k], log=TRUE)
-    }else if (nom %in% names(object@param@paramCategorical@alpha))
+    }else if (nom %in% names(object@param@paramCategorical@alpha)) {
       who <- which(nom ==  names(object@param@paramCategorical@alpha))
       for (k in 1:object@model@g){
         for (h in 1:ncol(object@param@paramCategorical@alpha[[who]]))
           logprob[where,k] <- logprob[where,k] + log(object@param@paramCategorical@alpha[[who]][k,h] ** (xnotna == colnames(object@param@paramCategorical@alpha[[who]])[h]))
-      }
+      }}
   }
   prob <- exp(logprob - apply(logprob, 1, max))
   prob/rowSums(prob)
